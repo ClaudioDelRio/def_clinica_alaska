@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veterinaria - Cuidado Profesional para tus Mascotas</title>
+    
+    <!-- Estilos y fuentes -->
+    <link rel="stylesheet" href="./assets/css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ============================================
+         HEADER - NAVEGACIÓN PRINCIPAL
+         ============================================ -->
+    <header class="encabezado">
+        <nav class="navegacion">
+            <!-- Logo con icono de huella -->
+            <div class="logo">
+                <i class="fas fa-paw icono-huella"></i>
+            </div>
+            
+            <!-- Menú hamburguesa para móviles -->
+            <button class="menu-hamburguesa" aria-label="Menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Menú de navegación (horizontal en desktop, lateral en móviles) -->
+            <ul class="menu-navegacion">
+                <li><a href="#inicio">INICIO</a></li>
+                <li><a href="#acerca">ACERCA DE NOSOTROS</a></li>
+                <li><a href="#servicios">SERVICIOS</a></li>
+                <li><a href="#contacto">CONTACTO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ============================================
+         CONTENIDO PRINCIPAL
+         ============================================ -->
+    <main class="contenido-principal">
+        <!-- Sección Hero con imagen de fondo y texto principal -->
+        <section class="seccion-hero" id="inicio">
+            <div class="contenedor-hero">
+                <div class="contenido-texto">
+                    <img src="./assets/img/logo.jpg" alt="Logo Veterinaria" class="logo-principal">
+                    <h1 class="titulo-principal">Clínica Veterinaria</h1>
+                    <p class="subtitulo">Cuidamos la salud de tus mascotas con amor y profesionalismo</p>
+                    <div class="contenedor-botones">
+                        <a href="mailto:osorno@clinicaalaska.cl" class="boton-principal">CONTACTO</a>
+                        <button class="boton-secundario">AGENDAR HORA</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================
+         FOOTER - NAVEGACIÓN INFERIOR
+         ============================================ -->
+    <footer class="pie-pagina">
+        <!-- Navegación con iconos fija en la parte inferior -->
+        <nav class="navegacion-inferior">
+            
+            <div class="icono-nav">
+                <i class="fas fa-user-md"></i>
+                <span>Doctores</span>
+            </div>
+            <div class="icono-nav">
+                <i class="fas fa-heart"></i>
+                <span>Cuidados</span>
+            </div>
+            <div class="icono-nav">
+                <i class="fas fa-calendar-alt"></i>
+                <span>AGENDAR</span>
+            </div>
+            <a href="https://www.facebook.com/people/Alaska-Pets-Center-Ltda/100042341516292/" target="_blank" rel="noopener noreferrer" class="icono-nav">
+                <i class="fab fa-facebook"></i>
+                <span>FACEBOOK</span>
+            </a>
+            <div class="icono-nav">
+                <i class="fab fa-instagram"></i>
+                <span>INSTAGRAM</span>
+            </div>
+        </nav>
+    </footer>
+
+    <!-- JavaScript principal -->
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>

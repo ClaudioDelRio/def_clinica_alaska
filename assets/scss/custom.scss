@@ -1,0 +1,736 @@
+/* ============================================
+   VARIABLES DE COLORES
+   ============================================ */
+
+:root {
+    /* Colores principales */
+    --color-blanco: #fff;
+    --color-negro: #333;
+    --color-gris-claro: #666;
+    --color-gris-medio: #555;
+    
+    /* Colores de marca */
+    --color-dorado: #D4A574;
+    --color-dorado-hover: #C89960;
+    --color-marron: #8B7355;
+    --color-azul-oscuro: #2c3e50;
+    
+    /* Colores de fondo */
+    --color-fondo-claro: #f5f7fa;
+    --color-fondo-azul: #c3cfe2;
+    
+    /* Colores con transparencia */
+    --color-blanco-transparente-10: rgba(255, 255, 255, 0.1);
+    --color-blanco-transparente-30: rgba(255, 255, 255, 0.3);
+    --color-blanco-transparente-95: rgba(255, 255, 255, 0.95);
+    --color-negro-transparente-08: rgba(0, 0, 0, 0.08);
+    --color-negro-transparente-10: rgba(0, 0, 0, 0.1);
+    --color-negro-transparente-15: rgba(0, 0, 0, 0.15);
+    --color-negro-transparente-20: rgba(0, 0, 0, 0.2);
+    --color-negro-transparente-30: rgba(0, 0, 0, 0.3);
+    --color-dorado-transparente-10: rgba(212, 165, 116, 0.1);
+    --color-dorado-transparente-30: rgba(212, 165, 116, 0.3);
+    --color-dorado-transparente-40: rgba(212, 165, 116, 0.4);
+    --color-azul-oscuro-transparente-98: rgba(44, 62, 80, 0.98);
+    --color-fondo-claro-transparente-80: rgba(245, 247, 250, 0.8);
+}
+
+/* ============================================
+   ESTILOS GENERALES - VETERINARIA
+   ============================================ */
+
+/* Reset de estilos para empezar desde cero */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body con fondo degradado suave y una cuadrícula sutil */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--color-fondo-claro) 0%, var(--color-fondo-azul) 100%);
+    background-image: 
+        linear-gradient(90deg, var(--color-blanco-transparente-10) 1px, transparent 1px),
+        linear-gradient(var(--color-blanco-transparente-10) 1px, transparent 1px);
+    background-size: 20px 20px;
+    min-height: 100vh;
+    color: var(--color-negro);
+}
+
+/* ============================================
+   HEADER - NAVEGACIÓN PRINCIPAL
+   ============================================ */
+
+/* Header fijo y transparente para quedar sobre la imagen */
+.encabezado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+/* Contenedor de la navegación centrado */
+.navegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Icono de la huella blanco con sombra para visibilidad sobre la imagen */
+.logo .icono-huella {
+    font-size: 2rem;
+    color: var(--color-blanco);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    text-shadow: 0 2px 4px var(--color-negro-transparente-30);
+}
+
+/* Efecto de rotación al hacer hover sobre la huella */
+.logo .icono-huella:hover {
+    transform: scale(1.1) rotate(10deg);
+}
+
+/* Menú horizontal con espaciado entre enlaces */
+.menu-navegacion {
+    display: flex;
+    list-style: none;
+    gap: 2.5rem;
+}
+
+/* Enlaces del menú en blanco con sombra para legibilidad */
+.menu-navegacion a {
+    text-decoration: none;
+    color: var(--color-blanco);
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+    position: relative;
+    text-shadow: 0 2px 4px var(--color-negro-transparente-30);
+}
+
+/* Color dorado al hacer hover */
+.menu-navegacion a:hover {
+    color: var(--color-dorado);
+}
+
+/* Línea animada debajo de los enlaces */
+.menu-navegacion a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-dorado);
+    transition: width 0.3s ease;
+}
+
+/* Expansión de la línea al hacer hover */
+.menu-navegacion a:hover::after {
+    width: 100%;
+}
+
+/* ============================================
+   MENÚ HAMBURGUESA - MÓVILES
+   ============================================ */
+
+/* Botón hamburguesa (oculto en desktop, visible en móviles) */
+.menu-hamburguesa {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+/* Tres líneas del menú hamburguesa en blanco */
+.menu-hamburguesa span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-blanco);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px var(--color-negro-transparente-30);
+}
+
+/* Primera línea transformada en parte de la X cuando está activo */
+.menu-hamburguesa.activo span:nth-child(1) {
+    transform: translateY(10.5px) rotate(45deg);
+}
+
+/* Línea del medio oculta cuando está activo */
+.menu-hamburguesa.activo span:nth-child(2) {
+    opacity: 0;
+}
+
+/* Tercera línea transformada en la otra parte de la X */
+.menu-hamburguesa.activo span:nth-child(3) {
+    transform: translateY(-10.5px) rotate(-45deg);
+}
+
+/* ============================================
+   SECCIÓN HERO - BANNER PRINCIPAL
+   ============================================ */
+
+/* Contenido principal sin padding superior para que la imagen llegue hasta arriba */
+.contenido-principal {
+    padding-top: 0;
+}
+
+/* Sección hero de altura completa con imagen de fondo */
+.seccion-hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    background: url('../img/fondo.png') center / cover no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Capa semitransparente sobre la imagen para mejorar legibilidad del texto */
+.seccion-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, var(--color-fondo-claro-transparente-80), var(--color-blanco-transparente-30));
+}
+
+/* Contenedor del contenido hero centrado */
+.contenedor-hero {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Limitador de ancho para el contenido de texto */
+.contenido-texto {
+    max-width: 600px;
+}
+
+/* Logo principal sobre el título */
+.logo-principal {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px var(--color-negro-transparente-15);
+    transition: transform 0.3s ease;
+}
+
+.logo-principal:hover {
+    transform: scale(1.05);
+}
+
+/* Título principal grande y elegante */
+.titulo-principal {
+    font-size: 5rem;
+    font-weight: 300;
+    color: var(--color-azul-oscuro);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    line-height: 1.1;
+}
+
+/* Subtítulo descriptivo */
+.subtitulo {
+    font-size: 1rem;
+    color: var(--color-gris-medio);
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    max-width: 450px;
+}
+
+/* Contenedor de botones para alinearlos horizontalmente */
+.contenedor-botones {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Botón de contacto con estilo dorado */
+.boton-principal {
+    background: var(--color-dorado);
+    color: var(--color-blanco);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--color-dorado-transparente-30);
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Efecto hover con elevación del botón */
+.boton-principal:hover {
+    background: var(--color-dorado-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--color-dorado-transparente-40);
+}
+
+/* Botón secundario con estilo outline */
+.boton-secundario {
+    background: transparent;
+    color: var(--color-azul-oscuro);
+    border: 2px solid var(--color-azul-oscuro);
+    padding: 0.9rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Efecto hover del botón secundario */
+.boton-secundario:hover {
+    background: var(--color-azul-oscuro);
+    color: var(--color-blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--color-negro-transparente-20);
+}
+
+/* ============================================
+   CONTENEDOR DE ANIMALES (USO FUTURO)
+   ============================================ */
+
+/* Contenedor para galería de animales */
+.contenedor-animales {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animal principal de la galería */
+.animal-principal {
+    margin-bottom: 2rem;
+    z-index: 2;
+}
+
+/* Imagen principal con bordes redondeados y sombra */
+.imagen-principal {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px var(--color-negro-transparente-15);
+    transition: transform 0.3s ease;
+}
+
+/* Efecto de zoom al hacer hover en imagen principal */
+.imagen-principal:hover {
+    transform: scale(1.05);
+}
+
+/* Contenedor de imágenes pequeñas */
+.animales-pequenos {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Imágenes pequeñas de animales */
+.animal-pequeno {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px var(--color-negro-transparente-10);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Efecto de elevación en imágenes pequeñas */
+.animal-pequeno:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 12px 25px var(--color-negro-transparente-20);
+}
+
+/* ============================================
+   FOOTER - NAVEGACIÓN INFERIOR
+   ============================================ */
+
+/* Footer fijo en la parte inferior con fondo semitransparente */
+.pie-pagina {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-blanco-transparente-95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    box-shadow: 0 -2px 20px var(--color-negro-transparente-08);
+    z-index: 999;
+}
+
+/* Navegación inferior centrada con padding para móviles */
+.navegacion-inferior {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Icono de navegación con texto vertical */
+.icono-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+/* Efecto hover con fondo suave */
+.icono-nav:hover {
+    background: var(--color-dorado-transparente-10);
+    transform: translateY(-2px);
+}
+
+/* Iconos en color marrón */
+.icono-nav i {
+    font-size: 1.4rem;
+    color: var(--color-marron);
+    margin-bottom: 0.4rem;
+    transition: color 0.3s ease;
+}
+
+/* Color dorado al hacer hover en iconos */
+.icono-nav:hover i {
+    color: var(--color-dorado);
+}
+
+/* Texto descriptivo debajo de cada icono */
+.icono-nav span {
+    font-size: 0.65rem;
+    color: var(--color-gris-claro);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+/* Animación de flotación para uso futuro */
+@keyframes flotar {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-20px); 
+    }
+}
+
+/* ============================================
+   RESPONSIVE - TABLET (1024px y menos)
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .navegacion {
+        padding: 0 1.5rem;
+    }
+
+    .contenedor-hero {
+        padding: 0 2rem;
+    }
+    
+    .titulo-principal {
+        font-size: 4rem;
+    }
+
+    .subtitulo {
+        font-size: 0.98rem;
+    }
+
+    .menu-navegacion {
+        gap: 2rem;
+    }
+
+    .menu-navegacion a {
+        font-size: 0.8rem;
+    }
+
+    .logo-principal {
+        width: 120px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MÓVIL (768px y menos)
+   ============================================ */
+
+@media (max-width: 768px) {
+    .navegacion {
+        padding: 0 1rem;
+    }
+
+    /* Mostrar menú hamburguesa en móviles */
+    .menu-hamburguesa {
+        display: flex;
+    }
+
+    /* Menú convertido en panel lateral deslizante */
+    .menu-navegacion {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        max-width: 300px;
+        height: 100vh;
+        background: var(--color-azul-oscuro-transparente-98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem;
+        transition: right 0.4s ease;
+        box-shadow: -5px 0 20px var(--color-negro-transparente-30);
+    }
+
+    /* Menú visible cuando está activo */
+    .menu-navegacion.activo {
+        right: 0;
+    }
+
+    .menu-navegacion li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .menu-navegacion a {
+        display: block;
+        padding: 1rem;
+        font-size: 1rem;
+        color: var(--color-blanco);
+    }
+
+    .menu-navegacion a::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .contenedor-hero {
+        padding: 0 1.5rem;
+    }
+    
+    .titulo-principal {
+        font-size: 3rem;
+    }
+
+    .subtitulo {
+        font-size: 0.95rem;
+    }
+    
+    .imagen-principal {
+        width: 280px;
+        height: 280px;
+    }
+    
+    /* Navegación inferior ajustada para no salirse de los bordes */
+    .navegacion-inferior {
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+        justify-content: space-between;
+    }
+
+    /* Imagen de fondo optimizada para móviles */
+    .seccion-hero {
+        background-position: center center;
+        background-size: cover;
+        background-attachment: scroll;
+    }
+
+    .pie-pagina {
+        padding: 0.8rem 0;
+    }
+
+    .logo-principal {
+        width: 100px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MÓVIL PEQUEÑO (480px y menos)
+   ============================================ */
+
+@media (max-width: 480px) {
+    .titulo-principal {
+        font-size: 2.5rem;
+    }
+
+    .subtitulo {
+        font-size: 0.9rem;
+        max-width: 100%;
+    }
+
+    .boton-principal {
+        padding: 0.8rem 2rem;
+        font-size: 0.8rem;
+    }
+
+    .boton-secundario {
+        padding: 0.8rem 2rem;
+        font-size: 0.8rem;
+    }
+
+    .contenedor-botones {
+        gap: 0.8rem;
+    }
+    
+    .animal-pequeno {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .animales-pequenos {
+        gap: 0.5rem;
+    }
+    
+    .imagen-principal {
+        width: 250px;
+        height: 250px;
+    }
+
+    .logo-principal {
+        width: 80px;
+        margin-bottom: 1rem;
+    }
+
+    /* Footer optimizado para que todos los iconos quepan sin salirse */
+    .navegacion-inferior {
+        gap: 0.5rem;
+        padding: 0 0.8rem;
+        justify-content: space-around;
+        flex-wrap: nowrap;
+    }
+
+    /* Iconos con distribución uniforme */
+    .icono-nav {
+        padding: 0.2rem 0.3rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .icono-nav i {
+        font-size: 1.1rem;
+    }
+
+    .icono-nav span {
+        font-size: 0.55rem;
+        white-space: nowrap;
+    }
+
+    .menu-navegacion {
+        width: 80%;
+        max-width: 100%;
+    }
+
+    .navegacion {
+        padding: 0 1rem;
+    }
+
+    .contenedor-hero {
+        padding: 0 1rem;
+    }
+
+    /* Imagen de fondo con mejor posicionamiento para móviles pequeños */
+    .seccion-hero {
+        background-position: 60% center;
+        background-size: cover;
+        background-attachment: scroll;
+        min-height: 100vh;
+    }
+
+    .pie-pagina {
+        padding: 0.6rem 0;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - PANTALLAS MUY PEQUEÑAS (360px)
+   ============================================ */
+
+@media (max-width: 360px) {
+    /* Footer comprimido para pantallas ultra pequeñas */
+    .navegacion-inferior {
+        gap: 0.3rem;
+        padding: 0 0.5rem;
+    }
+
+    .icono-nav {
+        padding: 0.2rem 0.2rem;
+    }
+
+    .icono-nav i {
+        font-size: 1rem;
+    }
+
+    .icono-nav span {
+        font-size: 0.5rem;
+    }
+
+    .titulo-principal {
+        font-size: 2rem;
+    }
+
+    .subtitulo {
+        font-size: 0.85rem;
+    }
+
+    .boton-principal,
+    .boton-secundario {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.75rem;
+    }
+
+    .contenedor-botones {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}
+
+/* ============================================
+   OPTIMIZACIÓN PARA ORIENTACIÓN VERTICAL
+   ============================================ */
+
+/* Ajuste de imagen de fondo para móviles en modo portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+    .seccion-hero {
+        background-position: 55% center;
+        background-size: auto 100%;
+    }
+}
