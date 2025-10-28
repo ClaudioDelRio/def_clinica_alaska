@@ -44,6 +44,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /* ============================================
+       HEADER CON CAMBIO DE FONDO AL HACER SCROLL
+       ============================================ */
+    
+    const header = document.querySelector('.encabezado');
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Cambiar el fondo del header después de 100px de scroll
+        if (scrollTop > 100) {
+            header.classList.add('scroll-activo');
+        } else {
+            header.classList.remove('scroll-activo');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+    
+    /* ============================================
        SCROLL SUAVE - NAVEGACIÓN INTERNA
        ============================================ */
     

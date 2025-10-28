@@ -73,6 +73,15 @@ body {
     box-shadow: none;
     z-index: 1000;
     padding: 1rem 0;
+    transition: all 0.4s ease;
+
+    /* Header con fondo oscuro al hacer scroll */
+    &.scroll-activo {
+        background: var(--color-azul-oscuro-transparente-98);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 2px 20px var(--color-negro-transparente-20);
+        padding: 0.7rem 0;
+    }
 }
 
 /* Contenedor de la navegación centrado */
@@ -824,6 +833,157 @@ body {
 }
 
 /* ============================================
+   FOOTER PRINCIPAL
+   ============================================ */
+
+.footer-principal {
+    background: linear-gradient(135deg, var(--color-azul-oscuro) 0%, #1a252f 100%);
+    color: var(--color-blanco);
+    padding: 4rem 2rem 2rem;
+    margin-bottom: 80px;
+}
+
+.contenedor-footer {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.grid-footer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.columna-footer {
+    h3 {
+        color: var(--color-dorado);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    h4 {
+        color: var(--color-dorado);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+}
+
+.logo-footer {
+    width: auto;
+    height: 100px;
+    max-width: 120px;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px var(--color-negro-transparente-30);
+    object-fit: contain;
+}
+
+.lista-footer {
+    list-style: none;
+    padding: 0;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    i {
+        color: var(--color-dorado);
+        font-size: 1.1rem;
+        margin-top: 0.2rem;
+        min-width: 20px;
+    }
+
+    a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: var(--color-dorado);
+        }
+    }
+}
+
+.nota-footer {
+    font-size: 0.85rem !important;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin-top: 1rem;
+}
+
+.redes-sociales-footer {
+    display: flex;
+    gap: 1rem;
+}
+
+.red-social {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-blanco);
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    &:hover {
+        background: var(--color-dorado);
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px var(--color-dorado-transparente-40);
+    }
+}
+
+.copyright {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    text-align: center;
+
+    p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.creditos {
+    font-size: 0.85rem !important;
+
+    strong {
+        color: var(--color-dorado);
+    }
+
+    a {
+        color: var(--color-dorado);
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: var(--color-dorado-hover);
+        }
+    }
+}
+
+/* ============================================
    CONTENEDOR DE ANIMALES (USO FUTURO)
    ============================================ */
 
@@ -1028,6 +1188,11 @@ body {
     .contenedor-mapa {
         height: 450px;
     }
+
+    .grid-footer {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2.5rem;
+    }
 }
 
 /* ============================================
@@ -1221,6 +1386,32 @@ body {
             font-size: 0.9rem;
         }
     }
+
+    .footer-principal {
+        padding: 3rem 1.5rem 1.5rem;
+        margin-bottom: 70px;
+    }
+
+    .grid-footer {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .columna-footer {
+        text-align: center;
+    }
+
+    .logo-footer {
+        margin: 0 auto 1rem;
+    }
+
+    .lista-footer li {
+        justify-content: center;
+    }
+
+    .redes-sociales-footer {
+        justify-content: center;
+    }
 }
 
 /* ============================================
@@ -1397,6 +1588,38 @@ body {
     .boton-whatsapp {
         padding: 0.9rem 1.2rem;
         font-size: 0.85rem;
+    }
+
+    .footer-principal {
+        padding: 2.5rem 1rem 1.5rem;
+    }
+
+    .grid-footer {
+        gap: 2rem;
+    }
+
+    .columna-footer {
+        h3 {
+            font-size: 1.1rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+    }
+
+    .lista-footer li {
+        font-size: 0.9rem;
+    }
+
+    .red-social {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
     }
 }
 
