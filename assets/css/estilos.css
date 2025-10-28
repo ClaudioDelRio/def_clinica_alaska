@@ -620,6 +620,187 @@ body {
 }
 
 /* ============================================
+   SECCIÓN DÓNDE ESTAMOS
+   ============================================ */
+.seccion-ubicacion {
+  min-height: 100vh;
+  padding: 8rem 2rem 10rem;
+  background: linear-gradient(135deg, var(--color-fondo-claro) 0%, var(--color-blanco) 100%);
+}
+
+.contenedor-ubicacion {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.encabezado-ubicacion {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.descripcion-ubicacion {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-gris-medio);
+  max-width: 700px;
+  margin: 2rem auto 0;
+}
+
+.contenido-ubicacion {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.contenedor-mapa {
+  width: 100%;
+  height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px var(--color-negro-transparente-15);
+  border: 3px solid var(--color-blanco);
+}
+
+.contenedor-mapa iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.info-contacto {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-contacto {
+  background: var(--color-blanco);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px var(--color-negro-transparente-10);
+  display: flex;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--color-dorado);
+}
+
+.card-contacto:hover {
+  transform: translateX(5px);
+  box-shadow: 0 8px 25px var(--color-negro-transparente-15);
+}
+
+.icono-contacto {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  background: linear-gradient(135deg, var(--color-dorado-transparente-10), var(--color-dorado-transparente-30));
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--color-dorado);
+}
+
+.texto-contacto {
+  flex: 1;
+}
+
+.texto-contacto h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-azul-oscuro);
+  margin-bottom: 0.8rem;
+}
+
+.texto-contacto p {
+  font-size: 0.95rem;
+  color: var(--color-gris-medio);
+  margin-bottom: 0.3rem;
+  line-height: 1.6;
+}
+
+.texto-contacto p.mt-1 {
+  margin-top: 0.8rem;
+}
+
+.texto-contacto a {
+  color: var(--color-gris-medio);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.texto-contacto a:hover {
+  color: var(--color-dorado);
+}
+
+.link-mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-dorado) !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.link-mapa:hover {
+  color: var(--color-dorado-hover) !important;
+}
+
+.nota-horario {
+  font-size: 0.85rem !important;
+  font-style: italic;
+  color: var(--color-gris-claro) !important;
+  margin-top: 0.8rem !important;
+}
+
+.acciones-contacto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.boton-llamar,
+.boton-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px var(--color-negro-transparente-10);
+}
+
+.boton-llamar {
+  background: var(--color-dorado);
+  color: var(--color-blanco);
+}
+
+.boton-llamar:hover {
+  background: var(--color-dorado-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--color-dorado-transparente-40);
+}
+
+.boton-whatsapp {
+  background: #25D366;
+  color: var(--color-blanco);
+}
+
+.boton-whatsapp:hover {
+  background: #20BA5A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* ============================================
    CONTENEDOR DE ANIMALES (USO FUTURO)
    ============================================ */
 /* Contenedor para galería de animales */
@@ -798,6 +979,13 @@ body {
   .titulo-servicio {
     font-size: 1.3rem;
   }
+  .contenido-ubicacion {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .contenedor-mapa {
+    height: 450px;
+  }
 }
 /* ============================================
    RESPONSIVE - MÓVIL (768px y menos)
@@ -925,6 +1113,32 @@ body {
   .texto-cta {
     font-size: 1.1rem;
   }
+  .seccion-ubicacion {
+    padding: 6rem 1.5rem 8rem;
+  }
+  .contenido-ubicacion {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .contenedor-mapa {
+    height: 400px;
+  }
+  .card-contacto {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  .icono-contacto {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    font-size: 1.5rem;
+  }
+  .texto-contacto h3 {
+    font-size: 1.1rem;
+  }
+  .texto-contacto p {
+    font-size: 0.9rem;
+  }
 }
 /* ============================================
    RESPONSIVE - MÓVIL PEQUEÑO (480px y menos)
@@ -1043,6 +1257,27 @@ body {
   }
   .texto-cta {
     font-size: 1rem;
+  }
+  .seccion-ubicacion {
+    padding: 5rem 1rem 7rem;
+  }
+  .contenedor-mapa {
+    height: 350px;
+  }
+  .card-contacto {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+  }
+  .acciones-contacto {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .boton-llamar,
+  .boton-whatsapp {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.85rem;
   }
 }
 /* ============================================
