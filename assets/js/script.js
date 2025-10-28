@@ -105,6 +105,60 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     /* ============================================
+       ANIMACIÓN DE NÚMEROS - ESTADÍSTICAS
+       ============================================ */
+    
+    // Función para animar los números de las estadísticas
+    function animarNumeros() {
+        const numeros = document.querySelectorAll('.stat-numero');
+        
+        numeros.forEach(numero => {
+            const target = parseInt(numero.getAttribute('data-target'));
+            const incremento = target / 100; // Duración aproximada de 2 segundos
+            let actual = 1;
+            
+            const timer = setInterval(() => {
+                actual += incremento;
+                
+                if (actual >= target) {
+                    clearInterval(timer);
+                    // Formatear el número final
+                    if (target === 14000) {
+                        numero.textContent = '14,000+';
+                    } else if (target === 18) {
+                        numero.textContent = '18+';
+                    } else if (target === 100) {
+                        numero.textContent = '100%';
+                    }
+                } else {
+                    // Formatear números durante la animación
+                    if (target === 14000) {
+                        numero.textContent = Math.floor(actual).toLocaleString('es-CL');
+                    } else {
+                        numero.textContent = Math.floor(actual);
+                    }
+                }
+            }, 20);
+        });
+    }
+    
+    // Observer para detectar cuando la sección de estadísticas entra en vista
+    const estadisticasObserver = new IntersectionObserver((entradas) => {
+        entradas.forEach(entrada => {
+            if (entrada.isIntersecting) {
+                animarNumeros();
+                estadisticasObserver.unobserve(entrada.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    // Observar la sección de estadísticas
+    const estadisticas = document.querySelector('.estadisticas');
+    if (estadisticas) {
+        estadisticasObserver.observe(estadisticas);
+    }
+    
+    /* ============================================
        NAVEGACIÓN ACTIVA - FOOTER
        ============================================ */
     
