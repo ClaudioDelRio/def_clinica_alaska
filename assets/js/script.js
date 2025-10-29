@@ -192,6 +192,270 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     /* ============================================
+       MODAL DE LOGIN / REGISTRO
+       ============================================ */
+    
+    // Elementos del modal de login
+    const modalLogin = document.getElementById('modalLogin');
+    const modalContainer = modalLogin.querySelector('.modal-container');
+    const closeModalBtn = document.getElementById('closeModal');
+    const signupLink = modalLogin.querySelector('.signup-link');
+    const signinLink = modalLogin.querySelector('.signin-link');
+    const botonesAgendar = document.querySelectorAll('.boton-secundario, .icono-nav:has(.fa-calendar-alt)');
+    
+    // Función para abrir el modal de login
+    function abrirModal() {
+        modalLogin.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Evita el scroll del body
+    }
+    
+    // Función para cerrar el modal de login
+    function cerrarModal() {
+        modalLogin.classList.remove('active');
+        document.body.style.overflow = '';
+        // Resetear a la vista de Sign In después de cerrar
+        setTimeout(() => {
+            modalContainer.classList.remove('navigate');
+        }, 400);
+    }
+    
+    // Abrir modal al hacer clic en botones de "AGENDAR HORA"
+    botonesAgendar.forEach(boton => {
+        boton.addEventListener('click', function(e) {
+            e.preventDefault();
+            abrirModal();
+        });
+    });
+    
+    // Cerrar modal al hacer clic en el botón X
+    closeModalBtn.addEventListener('click', cerrarModal);
+    
+    // Cerrar modal al hacer clic fuera del contenedor
+    modalLogin.addEventListener('click', function(e) {
+        if (e.target === modalLogin) {
+            cerrarModal();
+        }
+    });
+    
+    // Cerrar modal con la tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modalLogin.classList.contains('active')) {
+            cerrarModal();
+        }
+    });
+    
+    // Cambiar entre Sign Up y Sign In
+    signupLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        modalContainer.classList.add('navigate');
+    });
+    
+    signinLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        modalContainer.classList.remove('navigate');
+    });
+    
+    // Manejo de formularios con conexión al backend PHP
+    const formSignup = document.getElementById('formSignup');
+    const formSignin = document.getElementById('formSignin');
+    
+    // Función para mostrar mensajes de error/éxito
+    function mostrarMensaje(mensaje, tipo = 'info') {
+        // Crear elemento de mensaje
+        const mensajeDiv = document.createElement('div');
+        mensajeDiv.className = `mensaje-${tipo}`;
+        mensajeDiv.textContent = mensaje;
+        mensajeDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: ${tipo === 'success' ? '#4CAF50' : tipo === 'error' ? '#f44336' : '#2196F3'};
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(mensajeDiv);
+        
+        // Remover después de 4 segundos
+        setTimeout(() => {
+            mensajeDiv.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => mensajeDiv.remove(), 300);
+        }, 4000);
+    }
+    
+    // Función para deshabilitar/habilitar botón de envío
+    function toggleBotonEnvio(boton, deshabilitado, texto) {
+        boton.disabled = deshabilitado;
+        boton.textContent = texto;
+        boton.style.opacity = deshabilitado ? '0.6' : '1';
+        boton.style.cursor = deshabilitado ? 'not-allowed' : 'pointer';
+    }
+    
+    // REGISTRO DE USUARIOS
+    formSignup.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const boton = this.querySelector('.form-btn');
+        const textoOriginal = boton.textContent;
+        
+        // Obtener datos del formulario
+        const inputs = this.querySelectorAll('input');
+        const datos = {
+            nombre: inputs[0].value.trim(),
+            email: inputs[1].value.trim(),
+            telefono: inputs[2].value.trim(),
+            direccion: inputs[3].value.trim(),
+            password: inputs[4].value
+        };
+        
+        // Validaciones básicas en frontend
+        if (!datos.nombre || !datos.email || !datos.telefono || !datos.direccion || !datos.password) {
+            mostrarMensaje('Por favor, completa todos los campos', 'error');
+            return;
+        }
+        
+        try {
+            // Deshabilitar botón durante la petición
+            toggleBotonEnvio(boton, true, 'Registrando...');
+            
+            // Enviar datos al backend
+            const response = await fetch('./api/register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const resultado = await response.json();
+            
+            if (resultado.success) {
+                mostrarMensaje(resultado.message, 'success');
+                // Limpiar formulario
+                this.reset();
+                // Cerrar modal después de 2 segundos
+                setTimeout(() => {
+                    cerrarModal();
+                    // Recargar la página o actualizar UI según usuario logueado
+                    verificarSesion();
+                }, 2000);
+            } else {
+                mostrarMensaje(resultado.message, 'error');
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarMensaje('Error de conexión. Por favor, verifica tu servidor PHP.', 'error');
+        } finally {
+            toggleBotonEnvio(boton, false, textoOriginal);
+        }
+    });
+    
+    // INICIO DE SESIÓN
+    formSignin.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const boton = this.querySelector('.form-btn');
+        const textoOriginal = boton.textContent;
+        
+        // Obtener datos del formulario
+        const inputs = this.querySelectorAll('input');
+        const datos = {
+            email: inputs[0].value.trim(),
+            password: inputs[1].value
+        };
+        
+        // Validaciones básicas en frontend
+        if (!datos.email || !datos.password) {
+            mostrarMensaje('Por favor, completa todos los campos', 'error');
+            return;
+        }
+        
+        try {
+            // Deshabilitar botón durante la petición
+            toggleBotonEnvio(boton, true, 'Iniciando sesión...');
+            
+            // Enviar datos al backend
+            const response = await fetch('./api/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const resultado = await response.json();
+            
+            if (resultado.success) {
+                mostrarMensaje(resultado.message, 'success');
+                // Limpiar formulario
+                this.reset();
+                // Cerrar modal después de 2 segundos
+                setTimeout(() => {
+                    cerrarModal();
+                    // Recargar la página o actualizar UI según usuario logueado
+                    verificarSesion();
+                }, 2000);
+            } else {
+                mostrarMensaje(resultado.message, 'error');
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarMensaje('Error de conexión. Por favor, verifica tu servidor PHP.', 'error');
+        } finally {
+            toggleBotonEnvio(boton, false, textoOriginal);
+        }
+    });
+    
+    // VERIFICAR SESIÓN AL CARGAR LA PÁGINA
+    async function verificarSesion() {
+        try {
+            const response = await fetch('./api/verificar-sesion.php');
+            const resultado = await response.json();
+            
+            if (resultado.success && resultado.data.logueado) {
+                // Usuario está logueado
+                actualizarUIUsuarioLogueado(resultado.data.usuario);
+            } else {
+                // Usuario no está logueado
+                actualizarUIUsuarioNoLogueado();
+            }
+        } catch (error) {
+            console.error('Error al verificar sesión:', error);
+        }
+    }
+    
+    // ACTUALIZAR UI CUANDO EL USUARIO ESTÁ LOGUEADO
+    function actualizarUIUsuarioLogueado(usuario) {
+        // Cambiar botón "AGENDAR HORA" por nombre de usuario
+        const botonesAgendar = document.querySelectorAll('.boton-secundario');
+        botonesAgendar.forEach(boton => {
+            boton.textContent = `Hola, ${usuario.nombre.split(' ')[0]}`;
+            boton.style.background = 'linear-gradient(135deg, var(--color-dorado) 0%, var(--color-marron) 100%)';
+        });
+        
+        // Agregar opción de cerrar sesión
+        console.log('Usuario logueado:', usuario);
+    }
+    
+    // ACTUALIZAR UI CUANDO EL USUARIO NO ESTÁ LOGUEADO
+    function actualizarUIUsuarioNoLogueado() {
+        // Restaurar botones originales
+        const botonesAgendar = document.querySelectorAll('.boton-secundario');
+        botonesAgendar.forEach(boton => {
+            boton.textContent = 'AGENDAR HORA';
+        });
+    }
+    
+    // Verificar sesión al cargar la página
+    verificarSesion();
+    
+    /* ============================================
        EFECTO DE CARGA INICIAL
        ============================================ */
     

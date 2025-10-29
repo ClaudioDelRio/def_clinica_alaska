@@ -111,7 +111,7 @@
                         
                         <div class="estadisticas">
                             <div class="stat-item">
-                                <span class="stat-numero" data-target="18">1</span>
+                                <span class="stat-numero" data-target="23">1</span>
                                 <span class="stat-texto">Años de Experiencia</span>
                             </div>
                             <div class="stat-item">
@@ -356,7 +356,7 @@
                 <div class="columna-footer">
                     <img src="./assets/img/logo.jpg" alt="Logo Alaska Pets Center" class="logo-footer">
                     <h3>Clínica Veterinaria Alaska Pets Center</h3>
-                    <p>Más de 18 años cuidando la salud de tus mascotas con amor y profesionalismo. Especialistas en cirugías de tejidos blandos.</p>
+                    <p>Más de 22 años cuidando la salud de tus mascotas con amor y profesionalismo. Especialistas en cirugías de tejidos blandos.</p>
                 </div>
 
                 <!-- Columna 2: Contacto -->
@@ -431,6 +431,10 @@
         <nav class="navegacion-inferior">
             
             <div class="icono-nav">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Tienda</span>
+            </div>
+            <div class="icono-nav">
                 <i class="fas fa-user-md"></i>
                 <span>Doctores</span>
             </div>
@@ -442,7 +446,7 @@
                 <i class="fas fa-calendar-alt"></i>
                 <span>AGENDAR</span>
             </div>
-            <a href="https://www.facebook.com/people/Alaska-Pets-Center-Ltda/100042341516292/" target="_blank" rel="noopener noreferrer" class="icono-nav">
+           <a href="https://www.facebook.com/people/Alaska-Pets-Center-Ltda/100042341516292/" target="_blank" rel="noopener noreferrer" class="icono-nav">
                 <i class="fab fa-facebook"></i>
                 <span>FACEBOOK</span>
             </a>
@@ -452,6 +456,81 @@
             </div>
         </nav>
     </footer>
+
+    <!-- ============================================
+         MODAL DE LOGIN / REGISTRO
+         ============================================ -->
+    <div class="modal-overlay" id="modalLogin">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModal" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="login-wrapper">
+                <!-- Fondo decorativo animado -->
+                <div class="login-wrapper-bg"></div>
+                
+                <!-- Formulario de Registro (Sign Up) -->
+                <div class="login-wrapper-left">
+                    <div class="form-header">
+                        <i class="fas fa-paw"></i>
+                        <h2>Crear Cuenta</h2>
+                        <p>Regístrate para agendar citas</p>
+                    </div>
+                    
+                    <form class="form-auth" id="formSignup">
+                        <div class="input-group">
+                            <input type="text" placeholder="Nombre completo" required />
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" placeholder="Correo electrónico" required />
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" placeholder="Teléfono" required />
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" placeholder="Dirección completa" required />
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" placeholder="Contraseña" required />
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <button class="form-btn" type="submit">Registrarse</button>
+                    </form>
+                    
+                    <a href="#" class="toggle-link signin-link">¿Ya tienes cuenta? Inicia Sesión</a>
+                </div>
+                
+                <!-- Formulario de Inicio de Sesión (Sign In) -->
+                <div class="login-wrapper-right">
+                    <div class="form-header">
+                        <i class="fas fa-paw"></i>
+                        <h2>Iniciar Sesión</h2>
+                        <p>Accede a tu cuenta</p>
+                    </div>
+                    
+                    <form class="form-auth" id="formSignin">
+                        <div class="input-group">
+                            <input type="email" placeholder="Correo electrónico" required />
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" placeholder="Contraseña" required />
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                        <button class="form-btn" type="submit">Iniciar Sesión</button>
+                    </form>
+                    
+                    <a href="#" class="toggle-link signup-link">¿No tienes cuenta? Regístrate</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript principal -->
     <script src="./assets/js/script.js"></script>
