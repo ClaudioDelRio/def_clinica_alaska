@@ -34,5 +34,3 @@ if (estaLogueado()) {
 } else {
     enviarRespuesta(false, 'No hay ninguna sesión activa');
 }
-?>
-

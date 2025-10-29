@@ -93,5 +93,3 @@ try {
 } catch (PDOException $e) {
     enviarRespuesta(false, 'Error en el servidor. Por favor, intente más tarde.');
 }
-?>
-

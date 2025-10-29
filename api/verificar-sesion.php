@@ -27,5 +27,3 @@ if (estaLogueado()) {
         'logueado' => false
     ]);
 }
-?>
-
