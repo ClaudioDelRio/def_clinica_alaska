@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Claudio del Rio - Web.malgarini®">
+    <meta name="description" content="Panel de Usuario - Clínica Veterinaria Alaska Pets Center. Gestiona tus mascotas y reserva horas médicas.">
+    <title>Mi Panel - Clínica Veterinaria Alaska Pets Center</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="./assets/img/logo.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="./assets/img/logo.jpg">
+    <link rel="apple-touch-icon" href="./assets/img/logo.jpg">
+    
+    <!-- Estilos y fuentes -->
+    <link rel="stylesheet" href="./assets/css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ============================================
+         HEADER
+         ============================================ -->
+    <header class="dashboard-header">
+        <div class="dashboard-header-container">
+            <div class="dashboard-header-left">
+                <i class="fas fa-paw logo-icon"></i>
+                <h1 class="dashboard-header-title">Alaska Pets Center</h1>
+            </div>
+            <div class="dashboard-header-right">
+                <div class="dashboard-user-info">
+                    <div class="dashboard-user-avatar" id="userAvatar">JD</div>
+                    <div class="dashboard-user-details">
+                        <h3 id="userName">Usuario</h3>
+                        <p>Usuario Premium</p>
+                    </div>
+                </div>
+                <button class="btn-logout" id="btnLogout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================
+         CONTENEDOR PRINCIPAL
+         ============================================ -->
+    <div class="dashboard-container">
+        <!-- ============================================
+             SIDEBAR - PERFIL
+             ============================================ -->
+        <aside class="dashboard-sidebar">
+            <!-- Card de Información Personal -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <i class="fas fa-user-circle"></i>
+                    <h2>Mi Perfil</h2>
+                </div>
+                <div class="dashboard-profile-info" id="profileInfo">
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-user"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Nombre Completo</h4>
+                            <p id="profileNombre">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Correo Electrónico</h4>
+                            <p id="profileEmail">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-phone"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Teléfono</h4>
+                            <p id="profileTelefono">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Dirección</h4>
+                            <p id="profileDireccion">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Estadísticas -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>Estadísticas</h2>
+                </div>
+                <div class="dashboard-profile-info" id="statsInfo">
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-paw"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Mascotas Registradas</h4>
+                            <p id="statMascotas">0 mascotas</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Citas Totales</h4>
+                            <p id="statCitas">0 citas</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info-item">
+                        <i class="fas fa-clock"></i>
+                        <div class="dashboard-info-item-content">
+                            <h4>Próxima Cita</h4>
+                            <p id="statProximaCita">Sin citas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============================================
+             CONTENIDO PRINCIPAL
+             ============================================ -->
+        <main class="dashboard-main-content">
+            <!-- Tabs de navegación -->
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" data-tab="mascotas">
+                    <i class="fas fa-paw"></i>
+                    Mis Mascotas
+                </button>
+                <button class="dashboard-tab" data-tab="reservar">
+                    <i class="fas fa-calendar-plus"></i>
+                    Reservar Hora
+                </button>
+                <button class="dashboard-tab" data-tab="historial">
+                    <i class="fas fa-history"></i>
+                    Historial
+                </button>
+            </div>
+
+            <!-- ============================================
+                 SECCIÓN: MIS MASCOTAS
+                 ============================================ -->
+            <div class="dashboard-content-section active" id="section-mascotas">
+                <div class="dashboard-mascotas-grid" id="mascotasGrid">
+                    <!-- Card: Agregar nueva mascota -->
+                    <div class="dashboard-mascota-card dashboard-add-pet-card" id="btnAgregarMascota">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Agregar Nueva Mascota</p>
+                    </div>
+                    <!-- Las mascotas se cargarán dinámicamente aquí -->
+                </div>
+            </div>
+
+            <!-- ============================================
+                 SECCIÓN: RESERVAR HORA
+                 ============================================ -->
+            <div class="dashboard-content-section" id="section-reservar">
+                <div class="dashboard-reservar-container">
+                    <div class="dashboard-card-header">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h2>Reservar Nueva Hora</h2>
+                    </div>
+                    
+                    <form id="formReservarHora">
+                        <div class="dashboard-form-group">
+                            <label for="selectMascota">Selecciona tu mascota *</label>
+                            <select id="selectMascota" required>
+                                <option value="">-- Selecciona una mascota --</option>
+                            </select>
+                        </div>
+
+                        <div class="dashboard-form-group">
+                            <label for="selectServicio">Tipo de servicio *</label>
+                            <select id="selectServicio" required>
+                                <option value="">-- Selecciona un servicio --</option>
+                                <option value="consulta">Consulta General</option>
+                                <option value="vacunacion">Vacunación</option>
+                                <option value="cirugia">Cirugía</option>
+                                <option value="radiologia">Radiología</option>
+                                <option value="laboratorio">Exámenes de Laboratorio</option>
+                                <option value="peluqueria">Peluquería</option>
+                            </select>
+                        </div>
+
+                        <div class="dashboard-form-grid">
+                            <div class="dashboard-form-group">
+                                <label for="inputFecha">Fecha *</label>
+                                <input type="date" id="inputFecha" required>
+                            </div>
+
+                            <div class="dashboard-form-group">
+                                <label for="selectHora">Hora *</label>
+                                <select id="selectHora" required disabled>
+                                    <option value="">-- Primero selecciona una fecha --</option>
+                                </select>
+                                <small id="horaInfo" style="color: #666; font-size: 0.85rem; margin-top: 0.3rem; display: none;"></small>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-form-group">
+                            <label for="textareaMotivo">Motivo de la consulta *</label>
+                            <textarea id="textareaMotivo" placeholder="Describe brevemente el motivo de la consulta..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-check-circle"></i>
+                            Confirmar Reserva
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 SECCIÓN: HISTORIAL
+                 ============================================ -->
+            <div class="dashboard-content-section" id="section-historial">
+                <div class="dashboard-historial-list" id="historialList">
+                    <!-- El historial se cargará dinámicamente aquí -->
+                    <div class="dashboard-empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>Sin historial</h3>
+                        <p>Aún no tienes citas registradas</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript principal -->
+    <script src="./assets/js/tablero.js"></script>
+</body>
+</html>
+

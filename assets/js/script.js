@@ -399,12 +399,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarMensaje(resultado.message, 'success');
                 // Limpiar formulario
                 this.reset();
-                // Cerrar modal después de 2 segundos
+                // Cerrar modal y redirigir al panel de usuario
                 setTimeout(() => {
                     cerrarModal();
-                    // Recargar la página o actualizar UI según usuario logueado
-                    verificarSesion();
-                }, 2000);
+                    window.location.href = 'panel-usuario.html';
+                }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');
             }
@@ -456,12 +455,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarMensaje(resultado.message, 'success');
                 // Limpiar formulario
                 this.reset();
-                // Cerrar modal después de 2 segundos
+                // Cerrar modal y redirigir al panel de usuario
                 setTimeout(() => {
                     cerrarModal();
-                    // Recargar la página o actualizar UI según usuario logueado
-                    verificarSesion();
-                }, 2000);
+                    window.location.href = 'panel-usuario.html';
+                }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');
             }
