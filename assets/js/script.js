@@ -215,6 +215,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function abrirModal() {
         modalLogin.classList.add('active');
         document.body.style.overflow = 'hidden'; // Evita el scroll del body
+        
+        // En móviles, asegurar que muestra el formulario de login centrado
+        if (window.innerWidth <= 600) {
+            setTimeout(() => {
+                const loginForm = modalLogin.querySelector('.login-wrapper-right');
+                if (loginForm) {
+                    loginForm.scrollIntoView({ 
+                        behavior: 'auto', // Sin animación al abrir
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+                }
+            }, 50);
+        }
     }
     
     // Función para cerrar el modal de login
@@ -252,16 +266,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Cambiar entre Sign Up y Sign In
+    // Cambiar entre Sign Up y Sign In con scroll automático en móviles
     signupLink.addEventListener('click', function(e) {
         e.preventDefault();
         modalContainer.classList.add('navigate');
+        
+        // Scroll automático al formulario de registro en móviles
+        setTimeout(() => {
+            const registroForm = modalLogin.querySelector('.login-wrapper-left');
+            if (registroForm && window.innerWidth <= 600) {
+                registroForm.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }
+        }, 100); // Pequeño delay para que la transición comience
     });
     
     signinLink.addEventListener('click', function(e) {
         e.preventDefault();
         modalContainer.classList.remove('navigate');
+        
+        // Scroll automático al formulario de inicio de sesión en móviles
+        setTimeout(() => {
+            const loginForm = modalLogin.querySelector('.login-wrapper-right');
+            if (loginForm && window.innerWidth <= 600) {
+                loginForm.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }
+        }, 100);
     });
+    
+    // Mejorar experiencia cuando aparece el teclado en móviles
+    if (window.innerWidth <= 600) {
+        const todosLosInputs = modalLogin.querySelectorAll('input');
+        todosLosInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                // Pequeño delay para que el teclado aparezca primero
+                setTimeout(() => {
+                    this.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center'
+                    });
+                }, 300);
+            });
+        });
+    }
     
     // Manejo de formularios con conexión al backend PHP
     const formSignup = document.getElementById('formSignup');

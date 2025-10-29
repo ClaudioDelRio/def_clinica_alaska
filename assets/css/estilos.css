@@ -1787,66 +1787,209 @@ body {
 }
 /* Responsive para móviles */
 @media (max-width: 600px) {
+  .modal-overlay {
+    padding: 0;
+  }
   .modal-container {
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height para móviles */
     max-height: 100vh;
+    max-height: 100dvh;
     margin: 0;
     border-radius: 0;
+    animation: none; /* Desactivar animación en móviles para mejor rendimiento */
   }
   .login-wrapper {
     flex-direction: column;
     border-radius: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
   }
   .login-wrapper-bg {
     width: 200%;
     height: 100%;
     left: -90%;
-    top: -40%;
+    top: -50%;
     transform: rotateZ(-50deg);
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .modal-container.navigate .login-wrapper-bg {
-    transform: rotateZ(220deg) translate(100px, 100px);
+    transform: rotateZ(220deg) translate(80px, 80px);
   }
   .login-wrapper-left,
   .login-wrapper-right {
     width: 100%;
-    height: 100%;
-    padding: 30px 20px;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 20px 25px 80px;
+    justify-content: center; /* Centra el formulario verticalmente */
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Inicia mostrando el formulario de login centrado */
+  .login-wrapper-right {
+    padding-top: 60px;
+  }
+  /* El formulario de registro también centrado */
+  .login-wrapper-left {
+    padding-top: 60px;
   }
   .form-header {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
+    margin-top: 20px;
   }
   .form-header h2 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
   }
   .form-header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   .form-header i {
-    font-size: 2rem;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
   }
   .form-auth {
     max-width: 100%;
-    gap: 12px;
+    gap: 10px;
+    width: 100%;
+  }
+  .input-group {
+    margin-bottom: 5px;
+  }
+  .input-group input {
+    height: 48px;
+    font-size: 0.95rem;
+    padding: 0 45px 0 12px;
+    border-bottom-width: 2px;
+  }
+  .input-group input::placeholder {
+    font-size: 0.85rem;
+  }
+  .input-group i {
+    right: 12px;
+    font-size: 1rem;
+  }
+  .forgot-password {
+    font-size: 0.8rem;
+    margin-top: -3px;
+    margin-bottom: 8px;
+  }
+  .form-btn {
+    height: 48px;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+  }
+  .toggle-link {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 25px;
+    font-size: 0.85rem;
+    display: block;
+    text-align: center;
+  }
+  .signin-link,
+  .signup-link {
+    position: relative;
+    left: auto;
+    right: auto;
+  }
+  .modal-close {
+    top: 15px;
+    right: 15px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
+    border-width: 2px;
+    z-index: 100;
+    background: rgba(212, 165, 116, 0.95);
+    backdrop-filter: blur(5px);
+  }
+  .modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+  }
+}
+/* Ajustes adicionales para móviles muy pequeños */
+@media (max-width: 400px) {
+  .login-wrapper-left,
+  .login-wrapper-right {
+    padding: 15px 20px 70px;
+    padding-top: 50px;
+  }
+  .form-header {
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+  .form-header h2 {
+    font-size: 1.4rem;
+  }
+  .form-header i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  .form-header p {
+    font-size: 0.8rem;
+  }
+  .input-group {
+    margin-bottom: 4px;
   }
   .input-group input {
     height: 45px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+  }
+  .form-auth {
+    gap: 8px;
   }
   .form-btn {
     height: 45px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    margin-top: 15px;
   }
   .toggle-link {
-    bottom: 20px;
-    font-size: 0.85rem;
+    margin-top: 20px;
+    font-size: 0.8rem;
   }
   .modal-close {
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
     font-size: 1.1rem;
+  }
+}
+/* Ajustes para pantallas en landscape (horizontal) */
+@media (max-width: 900px) and (orientation: landscape) {
+  .modal-container {
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .login-wrapper-left,
+  .login-wrapper-right {
+    min-height: 100vh;
+    padding: 60px 30px 80px;
+  }
+  .form-header {
+    margin-bottom: 20px;
+  }
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+  .form-header i {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+  .input-group {
+    margin-bottom: 3px;
+  }
+  .form-auth {
+    gap: 8px;
   }
 }
 /* ============================================
