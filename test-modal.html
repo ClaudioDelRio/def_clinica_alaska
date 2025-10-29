@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modal</title>
+    <link rel="stylesheet" href="./assets/css/estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <h1>Test del Modal de Login</h1>
+    
+    <button id="btnTest" style="padding: 20px; font-size: 18px; cursor: pointer; margin: 20px;">
+        Click para abrir modal
+    </button>
+    
+    <div id="debug" style="padding: 20px; background: #f0f0f0; margin: 20px;">
+        <h3>Debug Info:</h3>
+        <div id="debugInfo"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalLogin">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModal" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="login-wrapper">
+                <div class="login-wrapper-bg"></div>
+                
+                <div class="login-wrapper-left">
+                    <div class="form-header">
+                        <i class="fas fa-paw"></i>
+                        <h2>Crear Cuenta</h2>
+                        <p>Regístrate para agendar citas</p>
+                    </div>
+                    
+                    <form class="form-auth" id="formSignup">
+                        <div class="input-group">
+                            <input type="text" placeholder="Nombre completo" required />
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <button class="form-btn" type="submit">Registrarse</button>
+                    </form>
+                    
+                    <a href="#" class="toggle-link signin-link">¿Ya tienes cuenta? Inicia Sesión</a>
+                </div>
+                
+                <div class="login-wrapper-right">
+                    <div class="form-header">
+                        <i class="fas fa-paw"></i>
+                        <h2>Iniciar Sesión</h2>
+                        <p>Accede a tu cuenta</p>
+                    </div>
+                    
+                    <form class="form-auth" id="formSignin">
+                        <div class="input-group">
+                            <input type="email" placeholder="Correo electrónico" required />
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <button class="form-btn" type="submit">Iniciar Sesión</button>
+                    </form>
+                    
+                    <a href="#" class="toggle-link signup-link">¿No tienes cuenta? Regístrate</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const debugInfo = document.getElementById('debugInfo');
+            
+            // Verificar que los elementos existen
+            const modalLogin = document.getElementById('modalLogin');
+            const btnTest = document.getElementById('btnTest');
+            const closeBtn = document.getElementById('closeModal');
+            
+            debugInfo.innerHTML = `
+                <p>Modal encontrado: ${modalLogin ? '✅ SI' : '❌ NO'}</p>
+                <p>Botón test encontrado: ${btnTest ? '✅ SI' : '❌ NO'}</p>
+                <p>Botón cerrar encontrado: ${closeBtn ? '✅ SI' : '❌ NO'}</p>
+            `;
+            
+            if (!modalLogin) {
+                debugInfo.innerHTML += '<p style="color: red;">❌ ERROR: No se encuentra el modal!</p>';
+                return;
+            }
+            
+            // Función para abrir modal
+            function abrirModal() {
+                console.log('Intentando abrir modal...');
+                modalLogin.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                debugInfo.innerHTML += '<p style="color: green;">✅ Modal abierto!</p>';
+            }
+            
+            // Función para cerrar modal
+            function cerrarModal() {
+                console.log('Cerrando modal...');
+                modalLogin.classList.remove('active');
+                document.body.style.overflow = '';
+                debugInfo.innerHTML += '<p style="color: orange;">⚠️ Modal cerrado</p>';
+            }
+            
+            // Event listener del botón de prueba
+            btnTest.addEventListener('click', function() {
+                console.log('Click en botón de prueba');
+                abrirModal();
+            });
+            
+            // Event listener del botón cerrar
+            if (closeBtn) {
+                closeBtn.addEventListener('click', cerrarModal);
+            }
+            
+            // Cerrar al hacer clic fuera
+            modalLogin.addEventListener('click', function(e) {
+                if (e.target === modalLogin) {
+                    cerrarModal();
+                }
+            });
+            
+            debugInfo.innerHTML += '<p style="color: blue;">✅ Eventos configurados correctamente</p>';
+        });
+    </script>
+</body>
+</html>
+

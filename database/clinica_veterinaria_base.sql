@@ -4,11 +4,11 @@
 -- ============================================
 
 -- Crear la base de datos
-CREATE DATABASE IF NOT EXISTS clinica_veterinaria 
+CREATE DATABASE IF NOT EXISTS c_alaska 
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Usar la base de datos
-USE clinica_veterinaria;
+USE c_alaska;
 
 -- ============================================
 -- TABLA DE USUARIOS
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS ca_mascotas (
 COMMENT='Tabla de mascotas - Relación 1:N con ca_usuarios (un usuario puede tener muchas mascotas)';
 
 
-SELECT '✅ Base de datos creada exitosamente!' as mensaje;
+SELECT '✅ Base de datos c_alaska creada exitosamente!' as mensaje;
 SELECT 'Tablas: ca_usuarios (con dirección) y ca_mascotas (relación 1:N)' as info;
 SELECT 'Las tablas están vacías y listas para usar' as estado;
 

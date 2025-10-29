@@ -195,18 +195,43 @@ document.addEventListener('DOMContentLoaded', function() {
        MODAL DE LOGIN / REGISTRO
        ============================================ */
     
+    console.log('🚀 Iniciando configuración del modal...');
+    
     // Elementos del modal de login
     const modalLogin = document.getElementById('modalLogin');
+    console.log('Modal encontrado:', modalLogin ? '✅' : '❌', modalLogin);
+    
+    if (!modalLogin) {
+        console.error('❌ ERROR: No se encuentra el modal con id="modalLogin"');
+        return;
+    }
+    
     const modalContainer = modalLogin.querySelector('.modal-container');
     const closeModalBtn = document.getElementById('closeModal');
     const signupLink = modalLogin.querySelector('.signup-link');
     const signinLink = modalLogin.querySelector('.signin-link');
-    const botonesAgendar = document.querySelectorAll('.boton-secundario, .icono-nav:has(.fa-calendar-alt)');
+    
+    // Botones de agendar (usando IDs específicos + clase)
+    const botonesAgendar = document.querySelectorAll('#btnAgendarHero, #btnAgendarFooter, .boton-secundario');
+    console.log('Botones de agendar encontrados:', botonesAgendar.length, botonesAgendar);
     
     // Función para abrir el modal de login
     function abrirModal() {
+        console.log('🔓 Ejecutando abrirModal()...');
+        console.log('Modal antes de abrir:', modalLogin);
+        console.log('Classes antes:', modalLogin.className);
+        
         modalLogin.classList.add('active');
         document.body.style.overflow = 'hidden'; // Evita el scroll del body
+        
+        console.log('Classes después:', modalLogin.className);
+        console.log('✅ Clase "active" agregada');
+        
+        // Verificar estilos computados
+        const estilos = window.getComputedStyle(modalLogin);
+        console.log('Opacity:', estilos.opacity);
+        console.log('Visibility:', estilos.visibility);
+        console.log('Display:', estilos.display);
     }
     
     // Función para cerrar el modal de login
@@ -220,12 +245,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Abrir modal al hacer clic en botones de "AGENDAR HORA"
-    botonesAgendar.forEach(boton => {
+    if (botonesAgendar.length === 0) {
+        console.warn('⚠️ ADVERTENCIA: No se encontraron botones de agendar');
+    }
+    
+    botonesAgendar.forEach((boton, index) => {
+        console.log(`Configurando evento para botón ${index + 1}:`, boton);
         boton.addEventListener('click', function(e) {
+            console.log('🎯 Click detectado en botón:', boton);
             e.preventDefault();
             abrirModal();
         });
     });
+    
+    console.log('✅ Modal configurado correctamente');
     
     // Cerrar modal al hacer clic en el botón X
     closeModalBtn.addEventListener('click', cerrarModal);
