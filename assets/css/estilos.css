@@ -2813,4 +2813,67 @@ body {
   background: #e0e0e0;
 }
 
+/* ============================================
+   BOTONES GLOBALES (para uso fuera de .form-actions)
+   ============================================ */
+.btn-primary {
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--color-dorado) 0%, var(--color-marron) 100%);
+  color: var(--color-blanco);
+  box-shadow: 0 4px 15px var(--color-dorado-transparente-30);
+}
+.btn-primary i {
+  font-size: 1.1rem;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--color-dorado-transparente-40);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f5f5f5;
+  color: var(--color-gris-claro);
+}
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+/* Ajustes específicos: botón Confirmar en Reservar Hora */
+#formReservarHora .btn-primary {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  #formReservarHora .btn-primary,
+  #formReservarHora .btn-secondary {
+    width: 100%;
+  }
+}
+
 /*# sourceMappingURL=estilos.css.map */
