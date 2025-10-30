@@ -27,6 +27,7 @@ if (!$datos) {
 // Extraer y limpiar los datos
 $nombre = isset($datos['nombre']) ? limpiarInput($datos['nombre']) : '';
 $email = isset($datos['email']) ? limpiarInput($datos['email']) : '';
+$rut = isset($datos['rut']) ? limpiarInput($datos['rut']) : '';
 $telefono = isset($datos['telefono']) ? limpiarInput($datos['telefono']) : '';
 $direccion = isset($datos['direccion']) ? limpiarInput($datos['direccion']) : '';
 $password = isset($datos['password']) ? $datos['password'] : '';
@@ -51,6 +52,13 @@ if (empty($email)) {
     $errores[] = 'El correo electrónico es obligatorio';
 } elseif (!validarEmail($email)) {
     $errores[] = 'El formato del correo electrónico no es válido';
+}
+
+// Validar RUT (OBLIGATORIO)
+if (empty($rut)) {
+    $errores[] = 'El RUT es obligatorio';
+} elseif (!validarRUT($rut)) {
+    $errores[] = 'El RUT ingresado no es válido. Formato: 12.345.678-9';
 }
 
 // Validar teléfono
@@ -84,10 +92,11 @@ if (!empty($errores)) {
 }
 
 /* ============================================
-   VERIFICAR SI EL EMAIL YA EXISTE
+   VERIFICAR SI EL EMAIL O RUT YA EXISTEN
    ============================================ */
 
 try {
+    // Verificar email
     $sql = "SELECT id FROM ca_usuarios WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['email' => $email]);
@@ -96,8 +105,20 @@ try {
         enviarRespuesta(false, 'Este correo electrónico ya está registrado');
     }
     
+    // Verificar RUT duplicado
+    $rutFormateado = formatearRUT($rut);
+    $sql = "SELECT id FROM ca_usuarios WHERE rut = :rut";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['rut' => $rutFormateado]);
+    
+    if ($stmt->fetch()) {
+        enviarRespuesta(false, 'Este RUT ya está registrado');
+    }
+    
 } catch (PDOException $e) {
-    enviarRespuesta(false, 'Error al verificar el correo electrónico');
+    // En desarrollo, mostrar el error real
+    error_log('Error en verificación: ' . $e->getMessage());
+    enviarRespuesta(false, 'Error al verificar los datos: ' . $e->getMessage());
 }
 
 /* ============================================
@@ -108,14 +129,18 @@ try {
     // Encriptar la contraseña
     $passwordHash = password_hash($password, PASSWORD_BCRYPT);
     
+    // Formatear el RUT
+    $rutFormateado = formatearRUT($rut);
+    
     // Insertar en la base de datos
-    $sql = "INSERT INTO ca_usuarios (nombre, email, telefono, direccion, password, fecha_registro) 
-            VALUES (:nombre, :email, :telefono, :direccion, :password, NOW())";
+    $sql = "INSERT INTO ca_usuarios (nombre, email, rut, telefono, direccion, password, fecha_registro) 
+            VALUES (:nombre, :email, :rut, :telefono, :direccion, :password, NOW())";
     
     $stmt = $pdo->prepare($sql);
     $resultado = $stmt->execute([
         'nombre' => $nombre,
         'email' => $email,
+        'rut' => $rutFormateado,
         'telefono' => $telefono,
         'direccion' => $direccion,
         'password' => $passwordHash
@@ -129,12 +154,14 @@ try {
         $_SESSION['usuario_id'] = $usuario_id;
         $_SESSION['usuario_nombre'] = $nombre;
         $_SESSION['usuario_email'] = $email;
+        $_SESSION['usuario_rut'] = $rutFormateado;
         
         enviarRespuesta(true, 'Registro exitoso. ¡Bienvenido/a!', [
             'usuario' => [
                 'id' => $usuario_id,
                 'nombre' => $nombre,
-                'email' => $email
+                'email' => $email,
+                'rut' => $rutFormateado
             ]
         ]);
     } else {
@@ -142,5 +169,7 @@ try {
     }
     
 } catch (PDOException $e) {
-    enviarRespuesta(false, 'Error en el servidor. Por favor, intente más tarde.');
+    // En desarrollo, mostrar el error real
+    error_log('Error en registro: ' . $e->getMessage());
+    enviarRespuesta(false, 'Error en el servidor: ' . $e->getMessage());
 }

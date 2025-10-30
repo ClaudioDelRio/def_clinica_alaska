@@ -21,7 +21,7 @@ $usuarioId = obtenerUsuarioId();
 
 try {
     // Obtener información del usuario
-    $sql = "SELECT id, nombre, email, telefono, direccion, fecha_registro, ultimo_acceso 
+    $sql = "SELECT id, nombre, email, rut, telefono, direccion, fecha_registro, ultimo_acceso 
             FROM ca_usuarios 
             WHERE id = :id";
     
@@ -68,6 +68,7 @@ try {
             'id' => $usuario['id'],
             'nombre' => $usuario['nombre'],
             'email' => $usuario['email'],
+            'rut' => $usuario['rut'],
             'telefono' => $usuario['telefono'],
             'direccion' => $usuario['direccion'],
             'iniciales' => obtenerIniciales($usuario['nombre']),

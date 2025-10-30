@@ -1602,7 +1602,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 60px 40px;
+  padding: 40px 40px;
   z-index: 2;
 }
 
@@ -1632,22 +1632,22 @@ body {
 
 .form-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 .form-header i {
-  font-size: 3rem;
+  font-size: 2.8rem;
   color: var(--color-dorado);
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   animation: pulse 2s ease-in-out infinite;
 }
 .form-header h2 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   color: var(--color-dorado);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 700;
 }
 .form-header p {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-gris-claro);
   font-weight: 300;
 }
@@ -1665,7 +1665,7 @@ body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .input-group {
@@ -1722,7 +1722,7 @@ body {
 .form-btn {
   width: 100%;
   height: 50px;
-  margin-top: 15px;
+  margin-top: 12px;
   border: none;
   border-radius: 50px;
   background: linear-gradient(135deg, var(--color-dorado) 0%, var(--color-marron) 100%);
@@ -1762,7 +1762,7 @@ body {
 }
 
 .signin-link {
-  left: 40px;
+  left: 118px;
 }
 
 /* Responsive para tablets */
@@ -1839,31 +1839,31 @@ body {
     padding-top: 60px;
   }
   .form-header {
-    margin-bottom: 25px;
-    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-top: 15px;
   }
   .form-header h2 {
-    font-size: 1.6rem;
-    margin-bottom: 8px;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
   }
   .form-header p {
     font-size: 0.85rem;
   }
   .form-header i {
-    font-size: 2.2rem;
-    margin-bottom: 12px;
+    font-size: 2rem;
+    margin-bottom: 10px;
   }
   .form-auth {
     max-width: 100%;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
   }
   .input-group {
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
   .input-group input {
-    height: 48px;
-    font-size: 0.95rem;
+    height: 46px;
+    font-size: 0.9rem;
     padding: 0 45px 0 12px;
     border-bottom-width: 2px;
   }
@@ -1880,9 +1880,9 @@ body {
     margin-bottom: 8px;
   }
   .form-btn {
-    height: 48px;
+    height: 46px;
     font-size: 0.9rem;
-    margin-top: 20px;
+    margin-top: 15px;
     letter-spacing: 0.5px;
   }
   .toggle-link {
@@ -1890,7 +1890,7 @@ body {
     bottom: auto;
     left: auto;
     right: auto;
-    margin-top: 25px;
+    margin-top: 20px;
     font-size: 0.85rem;
     display: block;
     text-align: center;

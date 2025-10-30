@@ -2,6 +2,60 @@
    JAVASCRIPT - FUNCIONALIDAD VETERINARIA
    ============================================ */
 
+/* ============================================
+   FUNCIÓN DE VALIDACIÓN DE RUT CHILENO
+   ============================================ */
+
+// Función para validar RUT chileno según algoritmo Módulo 11
+function validarRutJS(rut) {
+    // Limpiar el RUT (eliminar puntos, guiones y espacios)
+    rut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+    
+    // Verificar largo (mínimo 8 caracteres: 1234567 + dígito verificador)
+    if (rut.length < 8 || rut.length > 9) {
+        return false;
+    }
+    
+    // Separar número y dígito verificador
+    const numero = rut.slice(0, -1);
+    const dvIngresado = rut.slice(-1);
+    
+    // Calcular dígito verificador usando módulo 11
+    let suma = 0;
+    let multiplicador = 2;
+    
+    for (let i = numero.length - 1; i >= 0; i--) {
+        suma += parseInt(numero[i]) * multiplicador;
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+    
+    const resto = suma % 11;
+    const dv = 11 - resto;
+    const dvCalculado = dv === 11 ? '0' : dv === 10 ? 'K' : dv.toString();
+    
+    // Comparar dígito verificador ingresado con el calculado
+    return dvIngresado === dvCalculado;
+}
+
+// Función para formatear RUT con puntos y guión
+function formatearRutJS(rut) {
+    // Limpiar el RUT
+    rut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+    
+    if (rut.length < 2) {
+        return rut;
+    }
+    
+    // Separar número y dígito verificador
+    const numero = rut.slice(0, -1);
+    const dv = rut.slice(-1);
+    
+    // Agregar puntos cada 3 dígitos de derecha a izquierda
+    const formateado = numero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    
+    return formateado + '-' + dv;
+}
+
 // Espero a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -369,14 +423,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const datos = {
             nombre: inputs[0].value.trim(),
             email: inputs[1].value.trim(),
-            telefono: inputs[2].value.trim(),
-            direccion: inputs[3].value.trim(),
-            password: inputs[4].value
+            rut: inputs[2].value.trim(),
+            telefono: inputs[3].value.trim(),
+            direccion: inputs[4].value.trim(),
+            password: inputs[5].value
         };
         
         // Validaciones básicas en frontend
-        if (!datos.nombre || !datos.email || !datos.telefono || !datos.direccion || !datos.password) {
+        if (!datos.nombre || !datos.email || !datos.rut || !datos.telefono || !datos.direccion || !datos.password) {
             mostrarMensaje('Por favor, completa todos los campos', 'error');
+            return;
+        }
+        
+        // Validar formato del RUT
+        if (!validarRutJS(datos.rut)) {
+            mostrarMensaje('El RUT ingresado no es válido', 'error');
             return;
         }
         
@@ -511,6 +572,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar sesión al cargar la página
     verificarSesion();
+    
+    /* ============================================
+       FORMATEO AUTOMÁTICO DEL RUT AL ESCRIBIR
+       ============================================ */
+    
+    // Obtener el campo de RUT del formulario de registro
+    const inputRut = formSignup.querySelector('input[type="text"]:nth-of-type(2)'); // Tercer input (nombre, email, RUT)
+    
+    if (inputRut) {
+        // Formatear RUT mientras se escribe
+        inputRut.addEventListener('input', function(e) {
+            let valor = e.target.value;
+            // Eliminar todo excepto números y K
+            valor = valor.replace(/[^0-9kK]/g, '').toUpperCase();
+            
+            // Limitar a 9 caracteres (sin formato)
+            if (valor.length > 9) {
+                valor = valor.slice(0, 9);
+            }
+            
+            // Formatear si tiene al menos 2 caracteres
+            if (valor.length >= 2) {
+                e.target.value = formatearRutJS(valor);
+            } else {
+                e.target.value = valor;
+            }
+        });
+        
+        // Validar al perder el foco
+        inputRut.addEventListener('blur', function(e) {
+            const valor = e.target.value.trim();
+            
+            if (valor && !validarRutJS(valor)) {
+                e.target.style.borderColor = '#f44336';
+                mostrarMensaje('El RUT ingresado no es válido', 'error');
+            } else {
+                e.target.style.borderColor = '';
+            }
+        });
+    }
     
     /* ============================================
        EFECTO DE CARGA INICIAL

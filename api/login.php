@@ -56,7 +56,7 @@ if (!empty($errores)) {
    ============================================ */
 
 try {
-    $sql = "SELECT id, nombre, email, password FROM ca_usuarios WHERE email = :email";
+    $sql = "SELECT id, nombre, email, rut, password FROM ca_usuarios WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['email' => $email]);
     
@@ -76,6 +76,7 @@ try {
     $_SESSION['usuario_id'] = $usuario['id'];
     $_SESSION['usuario_nombre'] = $usuario['nombre'];
     $_SESSION['usuario_email'] = $usuario['email'];
+    $_SESSION['usuario_rut'] = $usuario['rut'];
     
     // Actualizar último acceso
     $sqlUpdate = "UPDATE ca_usuarios SET ultimo_acceso = NOW() WHERE id = :id";
@@ -86,7 +87,8 @@ try {
         'usuario' => [
             'id' => $usuario['id'],
             'nombre' => $usuario['nombre'],
-            'email' => $usuario['email']
+            'email' => $usuario['email'],
+            'rut' => $usuario['rut']
         ]
     ]);
     
