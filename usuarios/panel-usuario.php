@@ -49,7 +49,7 @@ if (!estaLogueado()) {
                     <div class="dashboard-user-avatar" id="userAvatar">JD</div>
                     <div class="dashboard-user-details">
                         <h3 id="userName">Usuario</h3>
-                        <p>Usuario Premium</p>
+                        <p>Tutor </p>
                     </div>
                 </div>
                 <button class="btn-logout" id="btnLogout">

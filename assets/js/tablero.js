@@ -541,20 +541,20 @@ function inicializarEventListeners() {
 
     // Botón de logout
     document.getElementById('btnLogout').addEventListener('click', async () => {
-        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-            try {
-                const response = await fetch(API_URL + 'logout.php', {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    window.location.href = 'index.html';
-                }
-            } catch (error) {
-                console.error('❌ Error al cerrar sesión:', error);
+        const confirmado = await mostrarConfirmacion('¿Estás seguro de que deseas cerrar sesión?', 'Cerrar sesión', 'Cancelar');
+        if (!confirmado) return;
+        try {
+            const response = await fetch(API_URL + 'logout.php', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (data.success) {
                 window.location.href = 'index.html';
             }
+        } catch (error) {
+            console.error('❌ Error al cerrar sesión:', error);
+            window.location.href = 'index.html';
         }
     });
 
