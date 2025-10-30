@@ -16,6 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarRespuesta(false, 'Método no permitido');
 }
 
+// Rate limiting: máximo 3 intentos de registro por minuto
+if (!verificarRateLimit('registro', 3, 60)) {
+    enviarRespuesta(false, 'Demasiados intentos. Por favor, espera un minuto.');
+}
+
 // Obtener los datos del formulario
 $datos = json_decode(file_get_contents('php://input'), true);
 

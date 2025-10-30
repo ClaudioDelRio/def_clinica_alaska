@@ -16,6 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarRespuesta(false, 'Método no permitido');
 }
 
+// Rate limiting: máximo 5 intentos de login por minuto
+if (!verificarRateLimit('login', 5, 60)) {
+    enviarRespuesta(false, 'Demasiados intentos de inicio de sesión. Por favor, espera un minuto.');
+}
+
 // Obtener los datos del formulario
 $datos = json_decode(file_get_contents('php://input'), true);
 
