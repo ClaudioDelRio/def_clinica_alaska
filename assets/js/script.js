@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Cerrar modal y redirigir al panel de usuario
                 setTimeout(() => {
                     cerrarModal();
-                    window.location.href = 'panel-usuario.html';
+                    window.location.href = 'usuarios/panel-usuario.php';
                 }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');
@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Cerrar modal y redirigir al panel de usuario
                 setTimeout(() => {
                     cerrarModal();
-                    window.location.href = 'panel-usuario.html';
+                    window.location.href = 'usuarios/panel-usuario.php';
                 }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');

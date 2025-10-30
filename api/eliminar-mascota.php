@@ -33,6 +33,7 @@ if (!$datos) {
 
 // Extraer ID de la mascota
 $mascotaId = isset($datos['id']) ? (int)$datos['id'] : 0;
+$forzar = isset($datos['force']) ? (bool)$datos['force'] : false;
 
 if ($mascotaId <= 0) {
     enviarError('ID de mascota inválido');
@@ -63,10 +64,18 @@ try {
     $stmtCitas->execute(['mascota_id' => $mascotaId]);
     $citasPendientes = $stmtCitas->fetch()['total'];
     
-    if ($citasPendientes > 0) {
-        enviarError("No se puede eliminar la mascota porque tiene $citasPendientes cita(s) pendiente(s). Por favor, cancela primero las citas.");
+    if ($citasPendientes > 0 && !$forzar) {
+        enviarError("La mascota tiene $citasPendientes cita(s) pendiente(s). Se requiere confirmación.");
     }
-    
+
+    // Iniciar transacción para eliminar en cascada de forma segura
+    $pdo->beginTransaction();
+
+    // Eliminar todas las citas relacionadas (pendientes, confirmadas e históricas)
+    $sqlDelCitas = "DELETE FROM ca_citas WHERE mascota_id = :id";
+    $stmtDelCitas = $pdo->prepare($sqlDelCitas);
+    $stmtDelCitas->execute(['id' => $mascotaId]);
+
     // Eliminar la mascota
     $sql = "DELETE FROM ca_mascotas WHERE id = :id AND usuario_id = :usuario_id";
     $stmt = $pdo->prepare($sql);
@@ -74,6 +83,12 @@ try {
         'id' => $mascotaId,
         'usuario_id' => $usuarioId
     ]);
+
+    if ($resultado) {
+        $pdo->commit();
+    } else {
+        $pdo->rollBack();
+    }
     
     if ($resultado) {
         enviarExito('✅ Mascota eliminada exitosamente', [

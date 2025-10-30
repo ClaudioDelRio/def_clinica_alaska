@@ -281,26 +281,46 @@ function editarMascota(id) {
 }
 
 async function eliminarMascota(id, nombre) {
-    if (!confirm(`¿Estás seguro de que deseas eliminar a ${nombre}?`)) {
-        return;
-    }
-    
     try {
+        // 1) Consultar cantidad de citas pendientes/confirmadas
+        const respCount = await fetch(API_URL + 'obtener-citas-pendientes-por-mascota.php?mascota_id=' + id);
+        const dataCount = await respCount.json();
+        if (!dataCount.success) {
+            mostrarMensaje('Error: ' + dataCount.message, 'error');
+            return;
+        }
+
+        const pendientes = dataCount.data.pendientes || 0;
+        let mensajeConfirm = '';
+        if (pendientes > 0) {
+            mensajeConfirm = `Esta acción eliminará la mascota "${nombre}" y sus ${pendientes} cita(s) pendiente(s)/confirmada(s).\n\n¿Estás seguro que deseas eliminar la mascota "${nombre}"?`;
+        } else {
+            mensajeConfirm = `¿Estás seguro que deseas eliminar la mascota "${nombre}"?`;
+        }
+
+        const confirmado = await mostrarConfirmacion(mensajeConfirm, 'Eliminar', 'Cancelar');
+        if (!confirmado) {
+            return;
+        }
+
+        // 2) Eliminar con cascada (force=true)
         const response = await fetch(API_URL + 'eliminar-mascota.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id })
+            body: JSON.stringify({ id, force: true })
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             mostrarMensaje(data.message, 'success');
             await cargarMascotas();
             await cargarDatosUsuario();
+            await cargarHistorial();
         } else {
+            // Si el backend pide confirmación adicional (no debería llegar aquí porque enviamos force)
             mostrarMensaje('Error: ' + data.message, 'error');
         }
     } catch (error) {
@@ -661,6 +681,53 @@ function mostrarMensaje(mensaje, tipo = 'info') {
         mensajeDiv.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => mensajeDiv.remove(), 300);
     }, 4000);
+}
+
+// Confirmación con toast estilado que devuelve Promise<boolean>
+function mostrarConfirmacion(mensaje, textoConfirmar = 'Confirmar', textoCancelar = 'Cancelar') {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+
+        const box = document.createElement('div');
+        box.style.cssText = 'max-width:420px;width:100%;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.25);padding:20px;font-family:\'Poppins\',sans-serif;animation:slideIn 0.25s ease;';
+
+        const p = document.createElement('p');
+        p.textContent = mensaje;
+        p.style.cssText = 'margin:0 0 18px;color:#333;line-height:1.6;font-size:0.98rem;white-space:pre-line;';
+
+        const actions = document.createElement('div');
+        actions.style.cssText = 'display:flex;gap:10px;justify-content:flex-end;';
+
+        const btnCancel = document.createElement('button');
+        btnCancel.textContent = textoCancelar;
+        btnCancel.style.cssText = 'padding:10px 16px;border:none;border-radius:10px;background:#f5f5f5;color:#666;font-weight:600;cursor:pointer;transition:all .2s;';
+        btnCancel.onmouseover = () => btnCancel.style.background = '#e0e0e0';
+        btnCancel.onmouseout = () => btnCancel.style.background = '#f5f5f5';
+
+        const btnOk = document.createElement('button');
+        btnOk.textContent = textoConfirmar;
+        btnOk.style.cssText = 'padding:10px 16px;border:none;border-radius:10px;background:linear-gradient(135deg, var(--color-dorado) 0%, var(--color-marron) 100%);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(212,165,116,.35);transition:all .2s;';
+        btnOk.onmouseover = () => btnOk.style.transform = 'translateY(-1px)';
+        btnOk.onmouseout = () => btnOk.style.transform = 'translateY(0)';
+
+        actions.appendChild(btnCancel);
+        actions.appendChild(btnOk);
+        box.appendChild(p);
+        box.appendChild(actions);
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+
+        const cleanup = (value) => {
+            box.style.animation = 'slideOut 0.2s ease';
+            setTimeout(() => { overlay.remove(); resolve(value); }, 180);
+        };
+
+        btnCancel.addEventListener('click', () => cleanup(false));
+        btnOk.addEventListener('click', () => cleanup(true));
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(false); });
+        document.addEventListener('keydown', function onKey(e){ if(e.key==='Escape'){ document.removeEventListener('keydown', onKey); cleanup(false); } });
+    });
 }
 
 // Agregar animaciones al head si no existen

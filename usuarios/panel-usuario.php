@@ -1,3 +1,12 @@
+<?php
+require_once __DIR__ . '/../api/configuracion.php';
+
+// Verificación de sesión del lado del servidor
+if (!estaLogueado()) {
+    header('Location: ../index.html');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,6 +15,9 @@
     <meta name="author" content="Claudio del Rio - Web.malgarini®">
     <meta name="description" content="Panel de Usuario - Clínica Veterinaria Alaska Pets Center. Gestiona tus mascotas y reserva horas médicas.">
     <title>Mi Panel - Clínica Veterinaria Alaska Pets Center</title>
+    
+    <!-- Base para rutas relativas desde subcarpeta -->
+    <base href="../">
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="./assets/img/logo.jpg">
@@ -16,6 +28,11 @@
     <link rel="stylesheet" href="./assets/css/estilos.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Opcional: evitar cacheo agresivo del panel protegido -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 </head>
 <body>
     <!-- ============================================
@@ -360,4 +377,5 @@
     <script src="./assets/js/tablero.js"></script>
 </body>
 </html>
+
 
