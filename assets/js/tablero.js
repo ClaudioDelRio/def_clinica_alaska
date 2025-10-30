@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar historial
     await cargarHistorial();
     
+    // Cargar doctores disponibles
+    await cargarDoctores();
+    
     // Inicializar event listeners
     inicializarEventListeners();
     
@@ -318,6 +321,7 @@ async function reservarHora(event) {
     const fechaCita = document.getElementById('inputFecha').value;
     const horaCita = document.getElementById('selectHora').value;
     const motivo = document.getElementById('textareaMotivo').value;
+    const doctorId = document.getElementById('selectDoctor') ? document.getElementById('selectDoctor').value : '';
     
     // Validaciones básicas
     if (!mascotaId || !servicio || !fechaCita || !horaCita || !motivo) {
@@ -333,6 +337,7 @@ async function reservarHora(event) {
             },
             body: JSON.stringify({
                 mascota_id: parseInt(mascotaId),
+                doctor_id: doctorId ? parseInt(doctorId) : null,
                 servicio,
                 fecha_cita: fechaCita,
                 hora_cita: horaCita,
@@ -555,6 +560,8 @@ function inicializarEventListeners() {
     // Formulario de reserva
     document.getElementById('formReservarHora').addEventListener('submit', reservarHora);
     
+    // Si existe select de doctor, nada más que preparar contenedor (se llena al cargar)
+    
     // Fecha mínima para el input de fecha
     const fechaInput = document.getElementById('inputFecha');
     if (fechaInput) {
@@ -586,6 +593,39 @@ function llenarSelectMascotas() {
         const option = document.createElement('option');
         option.value = mascota.id;
         option.textContent = `${mascota.nombre} - ${mascota.raza}`;
+        select.appendChild(option);
+    });
+}
+
+/* ============================================
+   DOCTORES DISPONIBLES
+   ============================================ */
+async function cargarDoctores() {
+    try {
+        const response = await fetch(API_URL + 'obtener-doctores.php');
+        const data = await response.json();
+        if (data.success) {
+            datosDoctores = data.data.doctores || [];
+            llenarSelectDoctores();
+        } else {
+            console.error('❌ Error al cargar doctores:', data.message);
+        }
+    } catch (error) {
+        console.error('❌ Error al cargar doctores:', error);
+    }
+}
+
+function llenarSelectDoctores() {
+    const select = document.getElementById('selectDoctor');
+    if (!select) return;
+    // Limpiar opciones (dejar placeholder)
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+    datosDoctores.forEach(doc => {
+        const option = document.createElement('option');
+        option.value = doc.id;
+        option.textContent = doc.nombre_completo || doc.nombre;
         select.appendChild(option);
     });
 }
