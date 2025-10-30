@@ -202,28 +202,41 @@ function crearCardMascota(mascota) {
     return card;
 }
 
-async function agregarMascota() {
-    const nombre = prompt('Nombre de la mascota:');
-    if (!nombre) return;
+function abrirModalMascota() {
+    // Limpiar formulario
+    document.getElementById('formMascota').reset();
     
-    const especie = prompt('Especie (perro/gato):');
-    if (!especie) return;
+    // Mostrar modal
+    const modal = document.getElementById('modalMascota');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalMascota() {
+    const modal = document.getElementById('modalMascota');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+async function guardarMascota(event) {
+    event.preventDefault();
     
-    const raza = prompt('Raza:');
-    if (!raza) return;
+    // Obtener valores del formulario
+    const formData = new FormData(event.target);
+    const nombre = formData.get('nombre').trim();
+    const especie = formData.get('especie');
+    const raza = formData.get('raza')?.trim() || null;
+    const edad = formData.get('edad') ? parseInt(formData.get('edad')) : null;
+    const sexo = formData.get('sexo') || null;
+    const peso = formData.get('peso') ? parseFloat(formData.get('peso')) : null;
+    const color = formData.get('color')?.trim() || null;
+    const vacunas_al_dia = parseInt(formData.get('vacunas_al_dia'));
     
-    const edad = prompt('Edad (años):');
-    if (!edad) return;
-    
-    const sexo = prompt('Sexo (macho/hembra):');
-    if (!sexo) return;
-    
-    const peso = prompt('Peso (kg):');
-    if (!peso) return;
-    
-    const color = prompt('Color:');
-    
-    const vacunas = confirm('¿Vacunas al día?');
+    // Validaciones básicas
+    if (!nombre || !especie) {
+        mostrarMensaje('Por favor, completa los campos obligatorios (Nombre y Especie)', 'error');
+        return;
+    }
     
     try {
         const response = await fetch(API_URL + 'agregar-mascota.php', {
@@ -233,13 +246,13 @@ async function agregarMascota() {
             },
             body: JSON.stringify({
                 nombre,
-                especie: especie.toLowerCase(),
+                especie,
                 raza,
-                edad: parseInt(edad),
-                sexo: sexo.toLowerCase(),
-                peso: parseFloat(peso),
+                edad,
+                sexo,
+                peso,
                 color,
-                vacunas_al_dia: vacunas ? 1 : 0
+                vacunas_al_dia
             })
         });
         
@@ -249,6 +262,7 @@ async function agregarMascota() {
             mostrarMensaje(data.message, 'success');
             await cargarMascotas();
             await cargarDatosUsuario();
+            cerrarModalMascota();
         } else {
             mostrarMensaje('Error: ' + data.message, 'error');
         }
@@ -520,7 +534,23 @@ function inicializarEventListeners() {
     });
 
     // Botón agregar mascota
-    document.getElementById('btnAgregarMascota').addEventListener('click', agregarMascota);
+    document.getElementById('btnAgregarMascota').addEventListener('click', abrirModalMascota);
+    
+    // Modal de mascota - Cerrar con X
+    document.getElementById('closeMascotaModal').addEventListener('click', cerrarModalMascota);
+    
+    // Modal de mascota - Cerrar con botón cancelar
+    document.getElementById('btnCancelarMascota').addEventListener('click', cerrarModalMascota);
+    
+    // Modal de mascota - Cerrar al hacer clic fuera del modal
+    document.getElementById('modalMascota').addEventListener('click', (e) => {
+        if (e.target.id === 'modalMascota') {
+            cerrarModalMascota();
+        }
+    });
+    
+    // Formulario de mascota
+    document.getElementById('formMascota').addEventListener('submit', guardarMascota);
 
     // Formulario de reserva
     document.getElementById('formReservarHora').addEventListener('submit', reservarHora);

@@ -230,6 +230,125 @@
         </main>
     </div>
 
+    <!-- ============================================
+         MODAL DE AGREGAR/EDITAR MASCOTA
+         ============================================ -->
+    <div class="modal-overlay" id="modalMascota">
+        <div class="modal-container modal-mascota">
+            <button class="modal-close" id="closeMascotaModal" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-content-mascota">
+                <div class="modal-header-mascota">
+                    <i class="fas fa-paw"></i>
+                    <h2 id="modalMascotaTitulo">Agregar Nueva Mascota</h2>
+                    <p>Completa los datos de tu mascota</p>
+                </div>
+                
+                <form class="form-mascota" id="formMascota">
+                    <div class="form-row">
+                        <div class="form-group-mascota">
+                            <label for="nombreMascota">Nombre *</label>
+                            <div class="input-group-mascota">
+                                <input type="text" id="nombreMascota" name="nombre" placeholder="Ej: Firulais" required />
+                                <i class="fas fa-signature"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-mascota">
+                            <label for="especieMascota">Especie *</label>
+                            <div class="input-group-mascota">
+                                <select id="especieMascota" name="especie" required>
+                                    <option value="">-- Selecciona --</option>
+                                    <option value="perro">Perro</option>
+                                    <option value="gato">Gato</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                                <i class="fas fa-paw"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-mascota">
+                            <label for="razaMascota">Raza</label>
+                            <div class="input-group-mascota">
+                                <input type="text" id="razaMascota" name="raza" placeholder="Ej: Labrador, Persa, etc." />
+                                <i class="fas fa-dog"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-mascota">
+                            <label for="edadMascota">Edad (años)</label>
+                            <div class="input-group-mascota">
+                                <input type="number" id="edadMascota" name="edad" placeholder="0" min="0" max="30" />
+                                <i class="fas fa-birthday-cake"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-mascota">
+                            <label for="sexoMascota">Sexo</label>
+                            <div class="input-group-mascota">
+                                <select id="sexoMascota" name="sexo">
+                                    <option value="">-- Selecciona --</option>
+                                    <option value="macho">Macho</option>
+                                    <option value="hembra">Hembra</option>
+                                </select>
+                                <i class="fas fa-venus-mars"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-mascota">
+                            <label for="pesoMascota">Peso (kg)</label>
+                            <div class="input-group-mascota">
+                                <input type="number" id="pesoMascota" name="peso" placeholder="0.0" min="0" max="200" step="0.1" />
+                                <i class="fas fa-weight"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-mascota">
+                            <label for="colorMascota">Color</label>
+                            <div class="input-group-mascota">
+                                <input type="text" id="colorMascota" name="color" placeholder="Ej: Café, Negro, Blanco, etc." />
+                                <i class="fas fa-palette"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-mascota">
+                            <label for="vacunasMascota">Vacunas al día</label>
+                            <div class="input-group-mascota input-radio">
+                                <label class="radio-label">
+                                    <input type="radio" name="vacunas_al_dia" value="1" checked />
+                                    <span>Sí</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="vacunas_al_dia" value="0" />
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="btnCancelarMascota">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary" id="btnGuardarMascota">
+                            <i class="fas fa-check"></i>
+                            Guardar Mascota
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript principal -->
     <script src="./assets/js/tablero.js"></script>
 </body>
