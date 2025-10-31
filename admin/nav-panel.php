@@ -24,11 +24,11 @@ $pageActive = $pageActive ?? 'dashboard';
     </a>
     <a href="./admin/gestionar-medicos.php" style="text-decoration: none; color: inherit; display: block;">
         <div class="menu-item <?php echo $pageActive === 'usuarios' ? 'active' : ''; ?>">
-            <i class="fas fa-users"></i> Usuarios
+            <i class="fas fa-users"></i> Médicos/admin
         </div>
     </a>
     <div class="menu-item">
-        <i class="fas fa-paw"></i> Mascotas
+        <i class="fas fa-paw"></i> Clientes
     </div>
     <div class="menu-item">
         <i class="fas fa-calendar-check"></i> Citas
