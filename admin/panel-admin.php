@@ -42,12 +42,16 @@ try {
         <div class="logo">
             <i class="fas fa-paw"></i> Admin Panel
         </div>
-        <div class="menu-item active">
-            <i class="fas fa-chart-line"></i> Dashboard
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-users"></i> Usuarios
-        </div>
+        <a href="./admin/panel-admin.php" style="text-decoration: none; color: inherit; display: block;">
+            <div class="menu-item active">
+                <i class="fas fa-chart-line"></i> Principal
+            </div>
+        </a>
+        <a href="./admin/gestionar-medicos.php" style="text-decoration: none; color: inherit; display: block;">
+            <div class="menu-item">
+                <i class="fas fa-users"></i> Usuarios
+            </div>
+        </a>
         <div class="menu-item">
             <i class="fas fa-paw"></i> Mascotas
         </div>
