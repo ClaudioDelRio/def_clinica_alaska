@@ -105,8 +105,11 @@ try {
                                     <button class="btn-icon" title="Editar" onclick="editarCliente(<?php echo $cliente['id']; ?>)">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon" title="<?php echo $cliente['activo'] ? 'Inactivar' : 'Activar'; ?>" onclick="eliminarCliente(<?php echo $cliente['id']; ?>)">
+                                    <button class="btn-icon" title="<?php echo $cliente['activo'] ? 'Inactivar' : 'Activar'; ?>" onclick="toggleCliente(<?php echo $cliente['id']; ?>)">
                                         <i class="<?php echo $cliente['activo'] ? 'fas fa-ban' : 'fas fa-check-circle'; ?>"></i>
+                                    </button>
+                                    <button class="btn-icon" title="Eliminar Definitivamente" onclick="eliminarClienteDefinitivo(<?php echo $cliente['id']; ?>)">
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -207,6 +210,37 @@ try {
                     <button class="modal-confirm-btn modal-confirm-btn-confirm" id="confirmBtn" onclick="confirmarToggleCliente()">
                         <i class="fas fa-check"></i>
                         Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de advertencia para eliminar cliente definitivamente -->
+    <div id="modalConfirmDelete" class="modal-confirm-overlay" style="display: none;">
+        <div class="modal-confirm-container">
+            <div class="modal-confirm-content">
+                <div class="modal-confirm-icon icon-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 class="modal-confirm-title">¿Eliminar Cliente Definitivamente?</h2>
+                <p class="modal-confirm-message" id="deleteMessage">
+                    Esta acción es irreversible. Se eliminarán también:
+                </p>
+                <div class="conteo-eliminacion" id="conteoEliminacion">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+                <p class="modal-confirm-medico" id="deleteNombre" style="color: #e74c3c; font-size: 1.2rem;">
+                    Cliente
+                </p>
+                <div class="modal-confirm-buttons">
+                    <button class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalDelete()">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button class="modal-confirm-btn modal-confirm-btn-delete" id="confirmDeleteBtn" onclick="confirmarEliminarCliente()">
+                        <i class="fas fa-trash-alt"></i>
+                        Eliminar Definitivamente
                     </button>
                 </div>
             </div>

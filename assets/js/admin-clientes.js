@@ -66,12 +66,12 @@
     }
 
     /**
-     * Eliminar cliente - Usar modal de confirmación
+     * Toggle cliente (activar/inactivar) - Usar modal de confirmación
      */
     let clientToggleId = null;
     let clientToggleActivo = false;
     
-    async function eliminarCliente(id) {
+    async function toggleCliente(id) {
         try {
             // Obtener datos del cliente para saber si está activo o inactivo
             const response = await fetch(`admin/obtener-cliente.php?id=${id}`);
@@ -91,6 +91,124 @@
         } catch (error) {
             console.error('Error:', error);
             showToast('error', 'Error', 'Error al cargar datos del cliente');
+        }
+    }
+    
+    /**
+     * Eliminar cliente definitivamente - Mostrar modal con conteo
+     */
+    let clientDeleteId = null;
+    
+    async function eliminarClienteDefinitivo(id) {
+        try {
+            // Obtener datos del cliente y conteos
+            const responseCliente = await fetch(`admin/obtener-cliente.php?id=${id}`);
+            const resultCliente = await responseCliente.json();
+            
+            if (!resultCliente.success) {
+                showToast('error', 'Error', resultCliente.message);
+                return;
+            }
+            
+            // Obtener conteos de mascotas y citas
+            const responseConteos = await fetch(`admin/contar-mascotas-citas.php?cliente_id=${id}`);
+            const resultConteos = await responseConteos.json();
+            
+            if (!resultConteos.success) {
+                showToast('error', 'Error', 'Error al obtener información de conteos');
+                return;
+            }
+            
+            const cliente = resultCliente.data;
+            const conteos = resultConteos.data;
+            clientDeleteId = id;
+            
+            // Configurar el modal de eliminación
+            configurarModalDelete(cliente, conteos);
+            abrirModalDelete();
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('error', 'Error', 'Error al cargar datos');
+        }
+    }
+    
+    /**
+     * Configurar modal de eliminación definitiva
+     */
+    function configurarModalDelete(cliente, conteos) {
+        const deleteNombre = document.getElementById('deleteNombre');
+        const conteoEliminacion = document.getElementById('conteoEliminacion');
+        
+        deleteNombre.textContent = cliente.nombre;
+        
+        let html = '';
+        if (conteos.mascotas > 0 || conteos.citas > 0) {
+            if (conteos.mascotas > 0) {
+                html += `<div class="conteo-item"><i class="fas fa-paw"></i> <strong>${conteos.mascotas}</strong> mascota(s) serán eliminada(s)</div>`;
+            }
+            if (conteos.citas > 0) {
+                html += `<div class="conteo-item"><i class="fas fa-calendar-check"></i> <strong>${conteos.citas}</strong> cita(s) será(n) eliminada(s)</div>`;
+            }
+        } else {
+            html = '<div class="conteo-item" style="color: var(--color-gris-claro);"><i class="fas fa-info-circle"></i> No tiene mascotas ni citas registradas</div>';
+        }
+        
+        conteoEliminacion.innerHTML = html;
+    }
+    
+    /**
+     * Abrir modal de eliminación
+     */
+    function abrirModalDelete() {
+        const modal = document.getElementById('modalConfirmDelete');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
+    
+    /**
+     * Cerrar modal de eliminación
+     */
+    function cerrarModalDelete() {
+        const modal = document.getElementById('modalConfirmDelete');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+    
+    /**
+     * Confirmar eliminación definitiva
+     */
+    async function confirmarEliminarCliente() {
+        if (!clientDeleteId) return;
+        
+        try {
+            const response = await fetch('admin/eliminar-cliente-cascada.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: clientDeleteId })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', result.message);
+                cerrarModalDelete();
+                // Esperar un poco para que se vea el toast antes de recargar
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('error', 'Error', 'Error al eliminar el cliente');
         }
     }
     
@@ -337,11 +455,14 @@
     window.abrirModalCrearCliente = abrirModalCrearCliente;
     window.cerrarModalCliente = cerrarModalCliente;
     window.editarCliente = editarCliente;
-    window.eliminarCliente = eliminarCliente;
+    window.toggleCliente = toggleCliente;
     window.guardarCliente = guardarCliente;
     window.cerrarModalConfirm = cerrarModalConfirm;
     window.confirmarToggleCliente = confirmarToggleCliente;
     window.toggleMascotas = toggleMascotas;
+    window.eliminarClienteDefinitivo = eliminarClienteDefinitivo;
+    window.cerrarModalDelete = cerrarModalDelete;
+    window.confirmarEliminarCliente = confirmarEliminarCliente;
 
     // Inicializar eventos cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
@@ -370,6 +491,16 @@
             modalConfirmToggle.addEventListener('click', function(e) {
                 if (e.target === this) {
                     cerrarModalConfirm();
+                }
+            });
+        }
+
+        // Cerrar modal de eliminación al hacer clic fuera
+        const modalConfirmDelete = document.getElementById('modalConfirmDelete');
+        if (modalConfirmDelete) {
+            modalConfirmDelete.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModalDelete();
                 }
             });
         }

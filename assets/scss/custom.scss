@@ -3579,6 +3579,15 @@ body {
     }
 }
 
+.btn-icon[title="Eliminar Definitivamente"] {
+    color: #999;
+
+    &:hover {
+        background: #ffebee;
+        color: #c62828;
+    }
+}
+
 /* Modal para formularios */
 .modal-overlay {
     position: fixed;
@@ -3849,6 +3858,11 @@ body {
         background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
         box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
     }
+
+    &.icon-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        box-shadow: 0 5px 20px rgba(231, 76, 60, 0.5);
+    }
 }
 
 .modal-confirm-title {
@@ -3930,6 +3944,48 @@ body {
             &:hover {
                 box-shadow: 0 6px 20px rgba(39, 174, 96, 0.5);
             }
+        }
+
+        &.modal-confirm-btn-delete {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+            }
+        }
+    }
+}
+
+.conteo-eliminacion {
+    background: #ffebee;
+    border-left: 3px solid #e74c3c;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+
+    .conteo-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        i {
+            color: #e74c3c;
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .conteo-numero {
+            font-weight: 700;
+            color: #c62828;
+            font-size: 1.1rem;
         }
     }
 }
