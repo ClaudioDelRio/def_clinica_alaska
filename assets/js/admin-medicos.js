@@ -57,11 +57,11 @@
                 modal.classList.add('active');
                 modal.style.display = 'flex';
             } else {
-                alert('Error: ' + result.message);
+                showToast('error', 'Error', result.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al cargar datos del médico');
+            showToast('error', 'Error', 'Error al cargar datos del médico');
         }
     }
 
@@ -86,11 +86,11 @@
                 configurarModalToggle(medico);
                 abrirModalConfirm();
             } else {
-                alert('Error: ' + result.message);
+                showToast('error', 'Error', result.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al cargar datos del médico');
+            showToast('error', 'Error', 'Error al cargar datos del médico');
         }
     }
     
@@ -165,15 +165,18 @@
             const result = await response.json();
             
             if (result.success) {
-                alert(result.message);
+                showToast('success', 'Éxito', result.message);
                 cerrarModalConfirm();
-                location.reload();
+                // Esperar un poco para que se vea el toast antes de recargar
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
             } else {
-                alert('Error: ' + result.message);
+                showToast('error', 'Error', result.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al cambiar el estado del médico');
+            showToast('error', 'Error', 'Error al cambiar el estado del médico');
         }
     }
 
@@ -209,15 +212,18 @@
             const result = await response.json();
             
             if (result.success) {
-                alert(result.message);
+                showToast('success', 'Éxito', result.message);
                 cerrarModalMedico();
-                location.reload();
+                // Esperar un poco para que se vea el toast antes de recargar
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
             } else {
-                alert('Error: ' + result.message);
+                showToast('error', 'Error', result.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al guardar el médico');
+            showToast('error', 'Error', 'Error al guardar el médico');
         }
     }
 
