@@ -17,12 +17,12 @@ $pageActive = $pageActive ?? 'dashboard';
     <div class="logo">
         <i class="fas fa-paw"></i> Admin Panel
     </div>
-    <a href="panel-admin.php" style="text-decoration: none; color: inherit; display: block;">
+    <a href="./admin/panel-admin.php" style="text-decoration: none; color: inherit; display: block;">
         <div class="menu-item <?php echo $pageActive === 'dashboard' ? 'active' : ''; ?>">
             <i class="fas fa-chart-line"></i> Dashboard
         </div>
     </a>
-    <a href="gestionar-medicos.php" style="text-decoration: none; color: inherit; display: block;">
+    <a href="./admin/gestionar-medicos.php" style="text-decoration: none; color: inherit; display: block;">
         <div class="menu-item <?php echo $pageActive === 'usuarios' ? 'active' : ''; ?>">
             <i class="fas fa-users"></i> Usuarios
         </div>
