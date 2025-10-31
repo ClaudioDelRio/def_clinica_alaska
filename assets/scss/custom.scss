@@ -4132,3 +4132,219 @@ body {
         max-width: 100%;
     }
 }
+
+/* ============================================
+   TABLA CLIENTES CON MASCOTAS DESPLEGABLES
+   ============================================ */
+
+.cliente-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(212, 165, 116, 0.05);
+    }
+}
+
+.expand-toggle {
+    width: 40px;
+    text-align: center;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--color-gris-claro);
+    transition: all 0.3s ease;
+    padding: 5px;
+    border-radius: 4px;
+
+    &:hover {
+        color: var(--color-dorado);
+        background: var(--color-dorado-transparente-10);
+    }
+
+    i {
+        transition: transform 0.3s ease;
+    }
+
+    &.active i {
+        transform: rotate(180deg);
+    }
+}
+
+.mascotas-row {
+    background-color: var(--color-fondo-claro);
+
+    &:hover {
+        background-color: var(--color-fondo-claro) !important;
+    }
+}
+
+.mascotas-container {
+    padding: 20px 40px !important;
+    background-color: var(--color-fondo-claro);
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: var(--color-gris-claro);
+
+    i {
+        font-size: 1.5rem;
+        color: var(--color-dorado);
+    }
+}
+
+.mascotas-list {
+    display: grid;
+    gap: 15px;
+}
+
+.mascota-card {
+    background: var(--color-blanco);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 3px solid var(--color-dorado);
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateX(3px);
+    }
+}
+
+.mascota-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.mascota-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    i {
+        font-size: 1.3rem;
+        color: var(--color-dorado);
+    }
+
+    h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--color-azul-oscuro);
+    }
+}
+
+.mascota-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.mascota-badge.activo {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.mascota-badge.inactivo {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.mascota-badge.vacunado {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.mascota-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--color-gris-medio);
+
+    span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        i {
+            color: var(--color-dorado);
+            width: 16px;
+        }
+
+        strong {
+            color: var(--color-azul-oscuro);
+        }
+    }
+}
+
+.mascota-observaciones {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+    color: var(--color-gris-claro);
+    font-style: italic;
+}
+
+.no-mascotas {
+    text-align: center;
+    padding: 20px;
+    color: var(--color-gris-claro);
+
+    i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+}
+
+/* Responsive para tabla de clientes */
+@media (max-width: 768px) {
+    .mascotas-container {
+        padding: 15px 20px !important;
+    }
+
+    .mascota-card {
+        padding: 12px;
+    }
+
+    .mascota-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mascota-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Ajuste para textarea */
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s;
+    resize: vertical;
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-dorado);
+        box-shadow: 0 0 0 3px var(--color-dorado-transparente-10);
+    }
+}
