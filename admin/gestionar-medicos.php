@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once __DIR__ . '/../api/configuracion.php';
 
 // TEMPORALMENTE: Sin restricciones de login mientras desarrollamos
@@ -49,36 +46,10 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-paw"></i> Admin Panel
-        </div>
-        <a href="./admin/panel-admin.php" style="text-decoration: none; color: inherit; display: block;">
-            <div class="menu-item">
-                <i class="fas fa-chart-line"></i> Inicio Panel
-            </div>
-        </a>
-        <div class="menu-item active">
-            <i class="fas fa-users"></i> Usuarios
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-paw"></i> Mascotas
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-calendar-check"></i> Citas
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-chart-bar"></i> Reportes
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-cog"></i> Configuración
-        </div>
-        <a href="../index.html" style="text-decoration: none; color: inherit; display: block;">
-            <div class="menu-item" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <i class="fas fa-home"></i> Volver al inicio
-            </div>
-        </a>
-    </div>
+    <?php 
+    $pageActive = 'usuarios';
+    include __DIR__ . '/nav-panel.php'; 
+    ?>
     
     <div class="main-content">
         <div class="panel-header">
@@ -213,47 +184,7 @@ try {
     </div>
 
     <script src="assets/js/admin-panel.js"></script>
-    <script>
-        // Funciones del modal
-        function abrirModalCrearMedico() {
-            document.getElementById('modalTitulo').textContent = 'Nuevo Médico';
-            document.getElementById('formMedico').reset();
-            document.getElementById('medico_id').value = '';
-            document.getElementById('password').required = true;
-            document.getElementById('password-label').textContent = '*';
-            document.getElementById('modalMedico').style.display = 'flex';
-        }
-
-        function cerrarModalMedico() {
-            document.getElementById('modalMedico').style.display = 'none';
-        }
-
-        function editarMedico(id) {
-            // Aquí cargarías los datos del médico vía AJAX
-            alert('Funcionalidad de edición en desarrollo');
-        }
-
-        function eliminarMedico(id) {
-            if (confirm('¿Está seguro de eliminar este médico?')) {
-                // Aquí implementarías la eliminación vía AJAX
-                alert('Funcionalidad de eliminación en desarrollo');
-            }
-        }
-
-        // Manejar envío del formulario
-        document.getElementById('formMedico').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Aquí implementarías el guardado vía AJAX
-            alert('Funcionalidad de guardado en desarrollo');
-        });
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('modalMedico').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarModalMedico();
-            }
-        });
-    </script>
+    <script src="assets/js/admin-medicos.js"></script>
 </body>
 </html>
 
