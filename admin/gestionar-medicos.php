@@ -99,8 +99,8 @@ try {
                                     <button class="btn-icon" title="Editar" onclick="editarMedico(<?php echo $medico['id']; ?>)">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-icon" title="Eliminar" onclick="eliminarMedico(<?php echo $medico['id']; ?>)">
-                                        <i class="fas fa-trash"></i>
+                                    <button class="btn-icon" title="<?php echo $medico['activo'] ? 'Inactivar' : 'Activar'; ?>" onclick="eliminarMedico(<?php echo $medico['id']; ?>)">
+                                        <i class="<?php echo $medico['activo'] ? 'fas fa-ban' : 'fas fa-check-circle'; ?>"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -170,6 +170,34 @@ try {
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para activar/inactivar médico -->
+    <div id="modalConfirmToggle" class="modal-confirm-overlay" style="display: none;">
+        <div class="modal-confirm-container">
+            <div class="modal-confirm-content">
+                <div class="modal-confirm-icon" id="confirmIcon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h2 class="modal-confirm-title" id="confirmTitle">¿Está seguro?</h2>
+                <p class="modal-confirm-message" id="confirmMessage">
+                    Se va a inactivar este médico
+                </p>
+                <p class="modal-confirm-medico" id="confirmMedico">
+                    Dr. Juan Pérez
+                </p>
+                <div class="modal-confirm-buttons">
+                    <button class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirm()">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button class="modal-confirm-btn modal-confirm-btn-confirm" id="confirmBtn" onclick="confirmarToggleMedico()">
+                        <i class="fas fa-check"></i>
+                        Confirmar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

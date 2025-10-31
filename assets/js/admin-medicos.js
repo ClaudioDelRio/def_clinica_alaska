@@ -66,31 +66,114 @@
     }
 
     /**
-     * Eliminar médico
+     * Eliminar médico - Usar modal de confirmación
      */
+    let medicoToggleId = null;
+    let medicoToggleActivo = false;
+    
     async function eliminarMedico(id) {
-        if (confirm('¿Está seguro de eliminar este médico?')) {
-            try {
-                const response = await fetch('admin/eliminar-medico.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: id })
-                });
+        try {
+            // Obtener datos del médico para saber si está activo o inactivo
+            const response = await fetch(`admin/obtener-medico.php?id=${id}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                const medico = result.data;
+                medicoToggleId = id;
+                medicoToggleActivo = medico.activo == 1;
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    alert('Médico eliminado correctamente');
-                    location.reload();
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al eliminar el médico');
+                // Configurar el modal según el estado del médico
+                configurarModalToggle(medico);
+                abrirModalConfirm();
+            } else {
+                alert('Error: ' + result.message);
             }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cargar datos del médico');
+        }
+    }
+    
+    /**
+     * Configurar el modal según si va a inactivar o activar
+     */
+    function configurarModalToggle(medico) {
+        const icon = document.getElementById('confirmIcon');
+        const title = document.getElementById('confirmTitle');
+        const message = document.getElementById('confirmMessage');
+        const medicoNombre = document.getElementById('confirmMedico');
+        const btnConfirm = document.getElementById('confirmBtn');
+        
+        medicoNombre.textContent = medico.nombre;
+        
+        if (medico.activo == 1) {
+            // Va a inactivar
+            icon.className = 'modal-confirm-icon icon-inactivo';
+            icon.innerHTML = '<i class="fas fa-ban"></i>';
+            title.textContent = '¿Inactivar Médico?';
+            message.textContent = 'Se va a inactivar este médico. No podrá iniciar sesión ni realizar operaciones.';
+            btnConfirm.className = 'modal-confirm-btn modal-confirm-btn-confirm btn-inactivo';
+            btnConfirm.innerHTML = '<i class="fas fa-ban"></i> Inactivar';
+        } else {
+            // Va a activar
+            icon.className = 'modal-confirm-icon icon-activo';
+            icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            title.textContent = '¿Activar Médico?';
+            message.textContent = 'Se va a activar este médico. Podrá iniciar sesión y realizar operaciones normalmente.';
+            btnConfirm.className = 'modal-confirm-btn modal-confirm-btn-confirm btn-activo';
+            btnConfirm.innerHTML = '<i class="fas fa-check-circle"></i> Activar';
+        }
+    }
+    
+    /**
+     * Abrir modal de confirmación
+     */
+    function abrirModalConfirm() {
+        const modal = document.getElementById('modalConfirmToggle');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
+    
+    /**
+     * Cerrar modal de confirmación
+     */
+    function cerrarModalConfirm() {
+        const modal = document.getElementById('modalConfirmToggle');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+    
+    /**
+     * Confirmar toggle (activar/inactivar)
+     */
+    async function confirmarToggleMedico() {
+        if (!medicoToggleId) return;
+        
+        try {
+            const response = await fetch('admin/toggle-medico.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: medicoToggleId })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert(result.message);
+                cerrarModalConfirm();
+                location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cambiar el estado del médico');
         }
     }
 
@@ -144,6 +227,8 @@
     window.editarMedico = editarMedico;
     window.eliminarMedico = eliminarMedico;
     window.guardarMedico = guardarMedico;
+    window.cerrarModalConfirm = cerrarModalConfirm;
+    window.confirmarToggleMedico = confirmarToggleMedico;
 
     // Inicializar eventos cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
@@ -162,6 +247,16 @@
             modalMedico.addEventListener('click', function(e) {
                 if (e.target === this) {
                     cerrarModalMedico();
+                }
+            });
+        }
+
+        // Cerrar modal de confirmación al hacer clic fuera
+        const modalConfirmToggle = document.getElementById('modalConfirmToggle');
+        if (modalConfirmToggle) {
+            modalConfirmToggle.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModalConfirm();
                 }
             });
         }
