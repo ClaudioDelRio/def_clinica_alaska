@@ -1,30 +1,17 @@
 <?php
 require_once __DIR__ . '/../api/configuracion.php';
 
-// TEMPORALMENTE: Sin restricciones de login mientras desarrollamos
-// TODO: Habilitar estas validaciones cuando creemos el login de admin
-/*
-if (!estaLogueado()) {
-    header('Location: ../index.html');
+// Verificar si el médico está logueado
+if (!isset($_SESSION['medico_id'])) {
+    header('Location: login.php');
     exit;
 }
 
-$usuario = obtenerUsuarioActual(); // Asumiendo helper en configuracion.php
-
-// Verificar si el usuario corresponde a un médico con rol admin
-try {
-    $stmt = $pdo->prepare('SELECT id, nombre, es_admin FROM ca_medicos WHERE usuario_id = :uid AND activo = 1');
-    $stmt->execute(['uid' => $usuario['id']]);
-    $medico = $stmt->fetch();
-    if (!$medico || (int)$medico['es_admin'] !== 1) {
-        header('Location: ../index.html');
-        exit;
-    }
-} catch (Throwable $e) {
-    header('Location: ../index.html');
+// Verificar si el médico está activo
+if (!isset($_SESSION['medico_es_admin'])) {
+    header('Location: login.php');
     exit;
 }
-*/
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -46,9 +33,16 @@ try {
     <div class="main-content">
         <div class="panel-header">
             <h1>Panel de Control</h1>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-user-circle" style="font-size: 2rem; color: #3498db;"></i>
-                <span>Admin User</span>
+            <div class="panel-header-user">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span><?php echo htmlspecialchars($_SESSION['medico_nombre'] ?? 'Usuario'); ?></span>
+                </div>
+                <a href="./admin/logout.php">
+                    <button class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </a>
             </div>
         </div>
         

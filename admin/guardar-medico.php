@@ -11,6 +11,14 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Verificar si el médico está logueado
+if (!isset($_SESSION['medico_id'])) {
+    die(json_encode([
+        'success' => false,
+        'message' => 'No autorizado'
+    ]));
+}
+
 // Solo acepta peticiones POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode([

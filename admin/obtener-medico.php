@@ -8,6 +8,14 @@ require_once __DIR__ . '/../api/configuracion.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+// Verificar si el médico está logueado
+if (!isset($_SESSION['medico_id'])) {
+    die(json_encode([
+        'success' => false,
+        'message' => 'No autorizado'
+    ]));
+}
+
 // Obtener ID del médico
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 

@@ -2939,6 +2939,51 @@ body {
   align-items: center;
   box-shadow: 0 2px 5px var(--color-negro-transparente-10);
 }
+.panel-header h1 {
+  margin: 0;
+  color: var(--color-azul-oscuro);
+  font-size: 1.8rem;
+}
+
+/* Contenedor de usuario en panel header */
+.panel-header-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.panel-header-user .user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.panel-header-user .user-info i {
+  font-size: 2rem;
+  color: #3498db;
+}
+.panel-header-user .user-info span {
+  font-size: 1rem;
+  color: var(--color-azul-oscuro);
+  font-weight: 500;
+}
+.panel-header-user a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Botón de logout */
+.btn-logout {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+.btn-logout:hover {
+  background: #c0392b;
+}
 
 /* Grid de estadísticas */
 .stats-grid {

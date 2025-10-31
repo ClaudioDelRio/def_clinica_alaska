@@ -1,27 +1,17 @@
 <?php
 require_once __DIR__ . '/../api/configuracion.php';
 
-// TEMPORALMENTE: Sin restricciones de login mientras desarrollamos
-/*
-if (!estaLogueado()) {
-    header('Location: ../index.html');
+// Verificar si el médico está logueado
+if (!isset($_SESSION['medico_id'])) {
+    header('Location: login.php');
     exit;
 }
 
-$usuario = obtenerUsuarioActual();
-try {
-    $stmt = $pdo->prepare('SELECT id, nombre, es_admin FROM ca_medicos WHERE usuario_id = :uid AND activo = 1');
-    $stmt->execute(['uid' => $usuario['id']]);
-    $medico = $stmt->fetch();
-    if (!$medico || (int)$medico['es_admin'] !== 1) {
-        header('Location: ../index.html');
-        exit;
-    }
-} catch (Throwable $e) {
-    header('Location: ../index.html');
+// Verificar si el médico es admin
+if (!isset($_SESSION['medico_es_admin']) || !$_SESSION['medico_es_admin']) {
+    header('Location: panel-admin.php');
     exit;
 }
-*/
 
 // Obtener lista de médicos
 $medicos = [];
