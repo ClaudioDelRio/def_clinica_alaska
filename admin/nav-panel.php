@@ -43,7 +43,7 @@ $pageActive = $pageActive ?? 'dashboard';
     <div class="menu-item">
         <i class="fas fa-cog"></i> Configuración
     </div>
-    <a href="logout.php" style="text-decoration: none; color: inherit; display: block;">
+    <a href="./admin/logout.php" style="text-decoration: none; color: inherit; display: block;">
         <div class="menu-item" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
         </div>

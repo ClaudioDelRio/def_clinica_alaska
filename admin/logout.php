@@ -10,6 +10,6 @@ require_once __DIR__ . '/../api/configuracion.php';
 session_destroy();
 
 // Redirigir al login
-header('Location: ../index.html');
+header('Location: login.php');
 exit;
 
