@@ -32,9 +32,11 @@ $pageActive = $pageActive ?? 'dashboard';
             <i class="fas fa-users"></i> Clientes
         </div>
     </a>
-    <div class="menu-item">
-        <i class="fas fa-calendar-check"></i> Citas
-    </div>
+    <a href="./admin/gestionar-citas-calendario.php" style="text-decoration: none; color: inherit; display: block;">
+        <div class="menu-item <?php echo $pageActive === 'citas' ? 'active' : ''; ?>">
+            <i class="fas fa-calendar-check"></i> Citas
+        </div>
+    </a>
     <div class="menu-item">
         <i class="fas fa-chart-bar"></i> Reportes
     </div>
