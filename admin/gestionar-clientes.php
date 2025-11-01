@@ -49,6 +49,19 @@ try {
             </button>
         </div>
 
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, RUT o nombre de mascota..." autocomplete="off">
+                <button class="search-clear" id="searchClear" onclick="limpiarBusqueda()" style="display: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="search-results-info" id="searchResultsInfo" style="display: none;">
+                <span id="searchCount"></span>
+            </div>
+        </div>
+
         <div class="table-container">
             <table class="data-table">
                 <thead>

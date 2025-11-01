@@ -441,6 +441,9 @@
      * Función auxiliar para escapar HTML
      */
     function escapeHtml(text) {
+        if (!text) return '';
+        // Convertir a string si no lo es
+        const textStr = String(text);
         const map = {
             '&': '&amp;',
             '<': '&lt;',
@@ -448,7 +451,205 @@
             '"': '&quot;',
             "'": '&#039;'
         };
-        return text ? text.replace(/[&<>"']/g, m => map[m]) : '';
+        return textStr.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    /**
+     * Búsqueda dinámica de clientes
+     */
+    let tablaOriginalHTML = null;
+    let searchTimeout = null;
+    const DEBOUNCE_DELAY = 300; // milisegundos
+
+    /**
+     * Inicializar búsqueda
+     */
+    function inicializarBusqueda() {
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+        const tbody = document.querySelector('.data-table tbody');
+        
+        if (!searchInput || !tbody) return;
+        
+        // Guardar HTML original
+        if (!tablaOriginalHTML) {
+            tablaOriginalHTML = tbody.innerHTML;
+        }
+        
+        // Event listener para búsqueda con debounce
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            
+            // Mostrar/ocultar botón limpiar
+            if (searchTerm.length > 0) {
+                searchClear.style.display = 'flex';
+            } else {
+                searchClear.style.display = 'none';
+                limpiarBusqueda();
+                return;
+            }
+            
+            // Limpiar timeout anterior
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            
+            // Debounce: esperar antes de buscar
+            searchTimeout = setTimeout(() => {
+                buscarClientes(searchTerm);
+            }, DEBOUNCE_DELAY);
+        });
+        
+        // Buscar al presionar Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const searchTerm = e.target.value.trim();
+                if (searchTerm.length > 0) {
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout);
+                    }
+                    buscarClientes(searchTerm);
+                }
+            }
+        });
+    }
+    
+    /**
+     * Buscar clientes
+     */
+    async function buscarClientes(termino) {
+        const tbody = document.querySelector('.data-table tbody');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const searchCount = document.getElementById('searchCount');
+        
+        if (!tbody) return;
+        
+        // Mostrar loading
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-dorado);"></i><br><br>Buscando...</td></tr>';
+        
+        try {
+            const response = await fetch(`admin/buscar-clientes.php?q=${encodeURIComponent(termino)}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success && result.data) {
+                // Renderizar resultados
+                renderizarClientes(result.data, tbody);
+                
+                // Mostrar conteo
+                const count = result.count || result.data.length;
+                const texto = count === 1 ? '1 cliente encontrado' : `${count} clientes encontrados`;
+                searchCount.textContent = texto;
+                searchResultsInfo.style.display = 'block';
+            } else {
+                // No hay resultados
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #999;"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>No se encontraron clientes</td></tr>';
+                searchCount.textContent = 'No se encontraron resultados';
+                searchResultsInfo.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error en búsqueda:', error);
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #e74c3c;"><i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>Error al realizar la búsqueda</td></tr>';
+            showToast('error', 'Error', 'Error al realizar la búsqueda: ' + error.message);
+        }
+    }
+    
+    /**
+     * Renderizar clientes en la tabla
+     */
+    function renderizarClientes(clientes, tbody) {
+        if (!clientes || clientes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #999;"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 10px; display: block;"></i>No se encontraron clientes</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        
+        clientes.forEach(cliente => {
+            const ultimoAcceso = cliente.ultimo_acceso 
+                ? new Date(cliente.ultimo_acceso).toLocaleDateString('es-ES', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+                : '<span style="color: #999;">Nunca</span>';
+            
+            html += `
+                <tr class="cliente-row" data-cliente-id="${cliente.id}">
+                    <td class="expand-toggle">
+                        <button class="toggle-btn" onclick="toggleMascotas(${cliente.id})">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </td>
+                    <td>${escapeHtml(cliente.id)}</td>
+                    <td><strong>${escapeHtml(cliente.nombre)}</strong></td>
+                    <td>${escapeHtml(cliente.email)}</td>
+                    <td>${escapeHtml(cliente.rut)}</td>
+                    <td>${escapeHtml(cliente.telefono)}</td>
+                    <td>
+                        ${cliente.activo == 1 
+                            ? '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Activo</span>' 
+                            : '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Inactivo</span>'}
+                    </td>
+                    <td>${new Date(cliente.fecha_registro).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                    <td>${ultimoAcceso}</td>
+                    <td class="actions">
+                        <button class="btn-icon" title="Editar" onclick="editarCliente(${cliente.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon" title="${cliente.activo ? 'Inactivar' : 'Activar'}" onclick="toggleCliente(${cliente.id})">
+                            <i class="${cliente.activo ? 'fas fa-ban' : 'fas fa-check-circle'}"></i>
+                        </button>
+                        <button class="btn-icon" title="Eliminar Definitivamente" onclick="eliminarClienteDefinitivo(${cliente.id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="mascotas-row" id="mascotas-${cliente.id}" style="display: none;">
+                    <td colspan="9" class="mascotas-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando mascotas...
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tbody.innerHTML = html;
+    }
+    
+    /**
+     * Limpiar búsqueda
+     */
+    function limpiarBusqueda() {
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const tbody = document.querySelector('.data-table tbody');
+        
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        
+        if (searchClear) {
+            searchClear.style.display = 'none';
+        }
+        
+        if (searchResultsInfo) {
+            searchResultsInfo.style.display = 'none';
+        }
+        
+        // Restaurar tabla original
+        if (tbody && tablaOriginalHTML) {
+            tbody.innerHTML = tablaOriginalHTML;
+        }
     }
 
     // Exportar funciones globalmente
@@ -463,9 +664,13 @@
     window.eliminarClienteDefinitivo = eliminarClienteDefinitivo;
     window.cerrarModalDelete = cerrarModalDelete;
     window.confirmarEliminarCliente = confirmarEliminarCliente;
+    window.limpiarBusqueda = limpiarBusqueda;
 
     // Inicializar eventos cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar búsqueda dinámica
+        inicializarBusqueda();
+        
         // Manejar envío del formulario
         const formCliente = document.getElementById('formCliente');
         if (formCliente) {
