@@ -31,6 +31,7 @@ $usuario_id = isset($data['usuario_id']) ? intval($data['usuario_id']) : 0;
 $mascota_id = isset($data['mascota_id']) ? intval($data['mascota_id']) : 0;
 $fecha_cita = isset($data['fecha_cita']) ? trim($data['fecha_cita']) : '';
 $hora_cita = isset($data['hora_cita']) ? trim($data['hora_cita']) : '';
+$duracion_minutos = isset($data['duracion_minutos']) ? intval($data['duracion_minutos']) : 30;
 $servicio = isset($data['servicio']) ? trim($data['servicio']) : '';
 $doctor_id = isset($data['doctor_id']) ? intval($data['doctor_id']) : null;
 $motivo = isset($data['motivo']) ? trim($data['motivo']) : '';
@@ -92,47 +93,102 @@ try {
         $doctor_id = null;
     }
     
-    // Verificar disponibilidad del horario
-    $stmt = $pdo->prepare("
-        SELECT id 
-        FROM ca_citas 
-        WHERE fecha_cita = :fecha 
-        AND hora_cita = :hora 
-        AND estado NOT IN ('cancelada', 'completada')
-    ");
-    $stmt->execute([
-        'fecha' => $fecha_cita,
-        'hora' => $hora_cita
-    ]);
+    // Calcular bloques horarios necesarios
+    $bloques_horarios = [];
+    list($hora, $minuto) = explode(':', $hora_cita);
+    $minuto_actual = ($hora * 60) + $minuto;
+    $bloques_necesarios = ceil($duracion_minutos / 30);
     
-    if ($stmt->fetch()) {
-        throw new Exception('El horario seleccionado ya está ocupado');
+    for ($i = 0; $i < $bloques_necesarios; $i++) {
+        $h = floor($minuto_actual / 60);
+        $m = $minuto_actual % 60;
+        $bloques_horarios[] = sprintf('%02d:%02d', $h, $m);
+        $minuto_actual += 30;
     }
     
-    // Crear la cita
-    $sql = "
-        INSERT INTO ca_citas (usuario_id, mascota_id, fecha_cita, hora_cita, servicio, doctor_id, motivo, estado)
-        VALUES (:usuario_id, :mascota_id, :fecha_cita, :hora_cita, :servicio, :doctor_id, :motivo, 'confirmada')
-    ";
+    // Verificar disponibilidad de todos los bloques
+    foreach ($bloques_horarios as $bloque) {
+        $stmt = $pdo->prepare("
+            SELECT id 
+            FROM ca_citas 
+            WHERE fecha_cita = :fecha 
+            AND hora_cita = :hora 
+            AND estado NOT IN ('cancelada', 'completada')
+        ");
+        $stmt->execute([
+            'fecha' => $fecha_cita,
+            'hora' => $bloque
+        ]);
+        
+        if ($stmt->fetch()) {
+            throw new Exception("El horario $bloque ya está ocupado");
+        }
+    }
     
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        'usuario_id' => $usuario_id,
-        'mascota_id' => $mascota_id,
-        'fecha_cita' => $fecha_cita,
-        'hora_cita' => $hora_cita,
-        'servicio' => $servicio,
-        'doctor_id' => $doctor_id,
-        'motivo' => $motivo
-    ]);
+    // Generar ID único para agrupar todos los bloques
+    $grupo_cita_id = uniqid('cita_', true);
     
-    $cita_id = $pdo->lastInsertId();
+    // Iniciar transacción para crear todos los bloques
+    $pdo->beginTransaction();
+    
+    try {
+        $cita_id = null;
+        
+        // Crear una cita por cada bloque horario
+        foreach ($bloques_horarios as $index => $bloque) {
+            $sql = "
+                INSERT INTO ca_citas (usuario_id, mascota_id, fecha_cita, hora_cita, duracion_minutos, servicio, doctor_id, motivo, estado, grupo_cita_id)
+                VALUES (:usuario_id, :mascota_id, :fecha_cita, :hora_cita, :duracion_minutos, :servicio, :doctor_id, :motivo, 'confirmada', :grupo_cita_id)
+            ";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'usuario_id' => $usuario_id,
+                'mascota_id' => $mascota_id,
+                'fecha_cita' => $fecha_cita,
+                'hora_cita' => $bloque,
+                'duracion_minutos' => $duracion_minutos,
+                'servicio' => $servicio,
+                'doctor_id' => $doctor_id,
+                'motivo' => $motivo,
+                'grupo_cita_id' => $grupo_cita_id
+            ]);
+            
+            // Guardar el ID de la primera cita como referencia
+            if ($index === 0) {
+                $cita_id = $pdo->lastInsertId();
+            }
+        }
+        
+        // Confirmar transacción
+        $pdo->commit();
+    } catch (Exception $e) {
+        // Revertir en caso de error
+        $pdo->rollBack();
+        throw $e;
+    }
+    
+    $mensaje_duracion = '';
+    if ($duracion_minutos > 30) {
+        $horas = floor($duracion_minutos / 60);
+        $minutos = $duracion_minutos % 60;
+        if ($horas > 0 && $minutos > 0) {
+            $mensaje_duracion = " ({$horas}h {$minutos}min - {$bloques_necesarios} bloques)";
+        } else if ($horas > 0) {
+            $mensaje_duracion = " ({$horas}h - {$bloques_necesarios} bloques)";
+        } else {
+            $mensaje_duracion = " ({$minutos}min - {$bloques_necesarios} bloques)";
+        }
+    }
     
     echo json_encode([
         'success' => true,
-        'message' => 'Cita creada exitosamente',
+        'message' => 'Cita creada exitosamente' . $mensaje_duracion,
         'data' => [
-            'cita_id' => $cita_id
+            'cita_id' => $cita_id,
+            'grupo_cita_id' => $grupo_cita_id,
+            'bloques_creados' => count($bloques_horarios),
+            'duracion_minutos' => $duracion_minutos
         ]
     ]);
     

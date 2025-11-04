@@ -3821,6 +3821,10 @@ body {
     width: 90%;
     animation: modalConfirmSlideIn 0.4s ease;
     overflow: hidden;
+
+    &.modal-confirm-duracion {
+        max-width: 550px;
+    }
 }
 
 @keyframes modalConfirmSlideIn {
@@ -3886,6 +3890,110 @@ body {
     font-weight: 600;
     color: var(--color-dorado);
     margin: 10px 0 20px;
+}
+
+// Selector de duración de cita
+.duracion-selector {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: var(--color-azul-oscuro);
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+
+        i {
+            color: var(--color-dorado);
+            margin-right: 8px;
+        }
+    }
+
+    select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        color: var(--color-azul-oscuro);
+        background-color: var(--color-blanco);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23D4A574' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        padding-right: 40px;
+
+        &:focus {
+            outline: none;
+            border-color: var(--color-dorado);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+
+        &:hover {
+            border-color: var(--color-dorado);
+        }
+    }
+}
+
+// Bloques horarios
+.bloques-horarios {
+    margin: 20px 0;
+    padding: 15px;
+    background: #e8f5e9;
+    border-radius: 10px;
+    border: 2px solid #4caf50;
+}
+
+.bloques-titulo {
+    font-weight: 600;
+    color: var(--color-azul-oscuro);
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+
+    i {
+        color: #4caf50;
+        margin-right: 8px;
+    }
+}
+
+.bloques-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bloque-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--color-blanco);
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--color-azul-oscuro);
+    font-size: 0.9rem;
+    border: 1px solid #c8e6c9;
+
+    i {
+        color: #4caf50;
+        font-size: 0.85rem;
+    }
+
+    &:first-child {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        font-weight: 600;
+
+        i {
+            color: #2e7d32;
+        }
+    }
 }
 
 .modal-confirm-buttons {

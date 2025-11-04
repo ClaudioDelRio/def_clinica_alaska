@@ -878,6 +878,7 @@
     // Variables globales para el proceso de creación de cita
     let citaNuevaFecha = null;
     let citaNuevaHora = null;
+    let citaNuevaDuracion = 30; // Duración en minutos (por defecto 30 min)
     let citaNuevoClienteId = null;
     let citaNuevoClienteNombre = null;
 
@@ -915,6 +916,13 @@
         document.getElementById('confirmarHoraFecha').textContent = fechaFormateada;
         document.getElementById('confirmarHoraHora').textContent = hora + ' hrs';
         
+        // Establecer duración por defecto
+        citaNuevaDuracion = 30;
+        document.getElementById('duracionCita').value = '30';
+        
+        // Actualizar bloques horarios
+        actualizarBloquesHorarios(hora, 30);
+        
         // Mostrar modal
         modal.classList.add('active');
     }
@@ -925,7 +933,7 @@
     function crearModalConfirmarHora() {
         const modalHtml = `
             <div id="modalConfirmarHoraCita" class="modal-confirm-overlay">
-                <div class="modal-confirm-container">
+                <div class="modal-confirm-container modal-confirm-duracion">
                     <div class="modal-confirm-content">
                         <div class="modal-confirm-icon icon-activo">
                             <i class="fas fa-calendar-check"></i>
@@ -935,12 +943,34 @@
                             <strong id="confirmarHoraFecha"></strong><br>
                             <strong id="confirmarHoraHora"></strong>
                         </p>
+                        
+                        <div class="duracion-selector">
+                            <label for="duracionCita">
+                                <i class="fas fa-clock"></i> Duración de la cita:
+                            </label>
+                            <select id="duracionCita" onchange="cambiarDuracionCita(this.value)">
+                                <option value="30">30 minutos</option>
+                                <option value="60">1 hora</option>
+                                <option value="90">1 hora 30 minutos</option>
+                                <option value="120">2 horas</option>
+                                <option value="150">2 horas 30 minutos</option>
+                                <option value="180">3 horas</option>
+                                <option value="210">3 horas 30 minutos</option>
+                                <option value="240">4 horas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="bloques-horarios" id="bloquesHorarios">
+                            <p class="bloques-titulo"><i class="fas fa-list"></i> Horarios que ocupará:</p>
+                            <div class="bloques-lista" id="bloquesLista"></div>
+                        </div>
+                        
                         <div class="modal-confirm-buttons">
                             <button type="button" class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirmarHora()">
                                 <i class="fas fa-times"></i>
                                 Cancelar
                             </button>
-                            <button type="button" class="modal-confirm-btn modal-confirm-btn-confirm" onclick="abrirModalBuscarCliente()">
+                            <button type="button" class="modal-confirm-btn modal-confirm-btn-confirm" onclick="validarYContinuar()">
                                 <i class="fas fa-check"></i>
                                 Continuar
                             </button>
@@ -952,6 +982,84 @@
         
         document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
+
+    /**
+     * Cambiar duración de la cita
+     */
+    window.cambiarDuracionCita = function(duracion) {
+        citaNuevaDuracion = parseInt(duracion);
+        const horaInicio = document.getElementById('confirmarHoraHora').textContent.replace(' hrs', '');
+        actualizarBloquesHorarios(horaInicio, citaNuevaDuracion);
+    };
+
+    /**
+     * Actualizar visualización de bloques horarios
+     */
+    function actualizarBloquesHorarios(horaInicio, duracionMinutos) {
+        const bloques = calcularBloquesNecesarios(horaInicio, duracionMinutos);
+        const bloquesLista = document.getElementById('bloquesLista');
+        
+        let html = '';
+        bloques.forEach((bloque, index) => {
+            const icono = index === 0 ? 'fa-play' : 'fa-clock';
+            html += `
+                <div class="bloque-item">
+                    <i class="fas ${icono}"></i>
+                    <span>${bloque}</span>
+                </div>
+            `;
+        });
+        
+        bloquesLista.innerHTML = html;
+    }
+
+    /**
+     * Calcular bloques horarios necesarios
+     */
+    function calcularBloquesNecesarios(horaInicio, duracionMinutos) {
+        const bloques = [];
+        const [hora, minuto] = horaInicio.split(':').map(Number);
+        
+        let minutoActual = hora * 60 + minuto;
+        const minutosTotal = duracionMinutos;
+        const bloquesNecesarios = Math.ceil(minutosTotal / 30);
+        
+        for (let i = 0; i < bloquesNecesarios; i++) {
+            const h = Math.floor(minutoActual / 60);
+            const m = minutoActual % 60;
+            const horaStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            bloques.push(horaStr);
+            minutoActual += 30;
+        }
+        
+        return bloques;
+    }
+
+    /**
+     * Validar disponibilidad y continuar
+     */
+    window.validarYContinuar = async function() {
+        const horaInicio = citaNuevaHora;
+        const bloques = calcularBloquesNecesarios(horaInicio, citaNuevaDuracion);
+        
+        // Verificar disponibilidad de todos los bloques
+        try {
+            const response = await fetch(`admin/validar-bloques-disponibles.php?fecha=${citaNuevaFecha}&bloques=${bloques.join(',')}`);
+            const result = await response.json();
+            
+            if (result.success && result.data.todos_disponibles) {
+                // Todos los bloques están disponibles, continuar
+                abrirModalBuscarCliente();
+            } else {
+                // Algunos bloques no están disponibles
+                const bloquesOcupados = result.data.bloques_ocupados || [];
+                showToast('error', 'Error', `Los siguientes horarios ya están ocupados: ${bloquesOcupados.join(', ')}`);
+            }
+        } catch (error) {
+            console.error('Error al validar bloques:', error);
+            showToast('error', 'Error', 'Error al validar disponibilidad de horarios');
+        }
+    };
 
     /**
      * Cerrar modal de confirmación de hora
@@ -1579,6 +1687,7 @@
             mascota_id: parseInt(document.getElementById('formCitaMascota').value),
             fecha_cita: document.getElementById('formCitaFecha').value,
             hora_cita: document.getElementById('formCitaHora').value,
+            duracion_minutos: citaNuevaDuracion,
             servicio: document.getElementById('formCitaServicio').value,
             doctor_id: document.getElementById('formCitaDoctor').value ? parseInt(document.getElementById('formCitaDoctor').value) : null,
             motivo: document.getElementById('formCitaMotivo').value
