@@ -484,10 +484,93 @@
     /**
      * Eliminar cita
      */
-    window.eliminarCita = async function(citaId) {
-        if (!confirm('¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.')) {
-            return;
+    window.eliminarCita = function(citaId) {
+        console.log('Eliminando cita ID:', citaId);
+        mostrarModalConfirmacionEliminar(citaId);
+    };
+
+    /**
+     * Mostrar modal de confirmación para eliminar cita
+     */
+    function mostrarModalConfirmacionEliminar(citaId) {
+        // Crear modal si no existe
+        let modal = document.getElementById('modalConfirmEliminarCita');
+        if (!modal) {
+            crearModalConfirmacionEliminar();
+            modal = document.getElementById('modalConfirmEliminarCita');
         }
+        
+        // Guardar el ID de la cita a eliminar
+        modal.dataset.citaId = citaId;
+        
+        // Mostrar modal
+        modal.classList.add('active');
+    }
+
+    /**
+     * Crear modal de confirmación para eliminar
+     */
+    function crearModalConfirmacionEliminar() {
+        const modalHtml = `
+            <div id="modalConfirmEliminarCita" class="modal-confirm-overlay">
+                <div class="modal-confirm-container">
+                    <div class="modal-confirm-content">
+                        <div class="modal-confirm-icon delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <h3 class="modal-confirm-title">¿Eliminar Cita?</h3>
+                        <p class="modal-confirm-message">
+                            Esta acción no se puede deshacer. La cita será eliminada permanentemente del sistema.
+                        </p>
+                        <div class="modal-confirm-buttons">
+                            <button type="button" class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirmEliminar()">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="button" class="modal-confirm-btn modal-confirm-btn-delete" onclick="confirmarEliminarCita()">
+                                <i class="fas fa-trash-alt"></i>
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        // Cerrar al hacer clic fuera del modal
+        const overlay = document.getElementById('modalConfirmEliminarCita');
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                cerrarModalConfirmEliminar();
+            }
+        });
+        
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModalConfirmEliminar();
+            }
+        });
+    }
+
+    /**
+     * Cerrar modal de confirmación
+     */
+    window.cerrarModalConfirmEliminar = function() {
+        const modal = document.getElementById('modalConfirmEliminarCita');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    };
+
+    /**
+     * Confirmar y ejecutar eliminación de cita
+     */
+    window.confirmarEliminarCita = async function() {
+        const modal = document.getElementById('modalConfirmEliminarCita');
+        const citaId = modal.dataset.citaId;
         
         try {
             const response = await fetch('admin/eliminar-cita.php', {
@@ -495,13 +578,14 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ cita_id: citaId })
+                body: JSON.stringify({ cita_id: parseInt(citaId) })
             });
             
             const result = await response.json();
             
             if (result.success) {
                 showToast('success', 'Éxito', result.message);
+                cerrarModalConfirmEliminar();
                 // Recargar vista diaria
                 if (fechaActualmenteVista) {
                     verDiaDetalle(fechaActualmenteVista);
@@ -541,7 +625,7 @@
         document.getElementById('editCitaMascotaEspecie').textContent = cita.mascota_especie;
         
         // Mostrar modal
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         
         // Cargar doctores y horarios disponibles
         cargarDoctoresEnSelect();
@@ -658,19 +742,24 @@
                 // Mantener opción "Sin asignar"
                 select.innerHTML = '<option value="">Sin asignar</option>';
                 
-                // Agregar doctores
-                result.data.forEach(doctor => {
+                // Agregar doctores - La API devuelve en result.data.doctores
+                const doctores = result.data.doctores || result.data || [];
+                doctores.forEach(doctor => {
                     const option = document.createElement('option');
                     option.value = doctor.id;
-                    option.textContent = doctor.nombre + (doctor.especialidad ? ` - ${doctor.especialidad}` : '');
+                    option.textContent = doctor.nombre_completo || (doctor.nombre + (doctor.especialidad ? ` - ${doctor.especialidad}` : ''));
                     select.appendChild(option);
                 });
                 
                 // Restaurar valor seleccionado
                 select.value = selectedValue;
+            } else {
+                console.error('Error al cargar doctores:', result.message);
+                showToast('error', 'Error', result.message || 'Error al cargar doctores');
             }
         } catch (error) {
             console.error('Error al cargar doctores:', error);
+            showToast('error', 'Error', 'Error al cargar la lista de doctores');
         }
     }
 
