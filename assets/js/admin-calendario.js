@@ -244,7 +244,7 @@
      */
     function renderizarCitasDelHorario(hora, citas) {
         if (!citas || citas.length === 0) {
-            return '<div class="no-cita">Libre</div>';
+            return `<div class="no-cita" ondblclick="abrirModalNuevaCita('${hora}')">Libre (doble clic para agendar)</div>`;
         }
         
         return citas.map(cita => {
@@ -868,6 +868,455 @@
         } catch (error) {
             console.error('Error al guardar cambios:', error);
             showToast('error', 'Error', 'Error al guardar los cambios');
+        }
+    };
+
+    /**
+     * FUNCIONALIDAD DE NUEVA CITA
+     */
+    
+    // Variables globales para el proceso de creación de cita
+    let citaNuevaFecha = null;
+    let citaNuevaHora = null;
+    let citaNuevoClienteId = null;
+    let citaNuevoClienteNombre = null;
+
+    /**
+     * Abrir modal de confirmación para nueva cita
+     */
+    window.abrirModalNuevaCita = function(hora) {
+        if (!fechaActualmenteVista) {
+            showToast('error', 'Error', 'No se pudo determinar la fecha');
+            return;
+        }
+        
+        citaNuevaFecha = fechaActualmenteVista;
+        citaNuevaHora = hora;
+        
+        mostrarModalConfirmarHora(citaNuevaFecha, citaNuevaHora);
+    };
+
+    /**
+     * Modal 1: Confirmar fecha y hora
+     */
+    function mostrarModalConfirmarHora(fecha, hora) {
+        let modal = document.getElementById('modalConfirmarHoraCita');
+        if (!modal) {
+            crearModalConfirmarHora();
+            modal = document.getElementById('modalConfirmarHoraCita');
+        }
+        
+        // Formatear fecha para mostrar
+        const fechaObj = new Date(fecha + 'T00:00:00');
+        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const fechaFormateada = fechaObj.toLocaleDateString('es-ES', opciones);
+        
+        // Actualizar contenido
+        document.getElementById('confirmarHoraFecha').textContent = fechaFormateada;
+        document.getElementById('confirmarHoraHora').textContent = hora + ' hrs';
+        
+        // Mostrar modal
+        modal.classList.add('active');
+    }
+
+    /**
+     * Crear modal de confirmación de hora
+     */
+    function crearModalConfirmarHora() {
+        const modalHtml = `
+            <div id="modalConfirmarHoraCita" class="modal-confirm-overlay">
+                <div class="modal-confirm-container">
+                    <div class="modal-confirm-content">
+                        <div class="modal-confirm-icon icon-activo">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="modal-confirm-title">¿Agendar Cita?</h3>
+                        <p class="modal-confirm-message">
+                            <strong id="confirmarHoraFecha"></strong><br>
+                            <strong id="confirmarHoraHora"></strong>
+                        </p>
+                        <div class="modal-confirm-buttons">
+                            <button type="button" class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirmarHora()">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="button" class="modal-confirm-btn modal-confirm-btn-confirm" onclick="abrirModalBuscarCliente()">
+                                <i class="fas fa-check"></i>
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cerrar modal de confirmación de hora
+     */
+    window.cerrarModalConfirmarHora = function() {
+        const modal = document.getElementById('modalConfirmarHoraCita');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    };
+
+    /**
+     * Modal 2: Buscar y seleccionar cliente
+     */
+    window.abrirModalBuscarCliente = function() {
+        cerrarModalConfirmarHora();
+        
+        let modal = document.getElementById('modalBuscarCliente');
+        if (!modal) {
+            crearModalBuscarCliente();
+            modal = document.getElementById('modalBuscarCliente');
+        }
+        
+        // Limpiar búsqueda anterior
+        document.getElementById('searchClienteInput').value = '';
+        document.getElementById('resultadosBusquedaCliente').innerHTML = '';
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+    };
+
+    /**
+     * Crear modal de búsqueda de cliente
+     */
+    function crearModalBuscarCliente() {
+        const modalHtml = `
+            <div id="modalBuscarCliente" class="modal" style="display: none;">
+                <div class="modal-content modal-buscar-cliente">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-search"></i> Buscar Cliente</h2>
+                        <button class="close-modal" onclick="cerrarModalBuscarCliente()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="search-box-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchClienteInput" placeholder="Buscar por nombre, RUT, teléfono o nombre de mascota..." onkeyup="buscarClienteParaCita(this.value)">
+                            </div>
+                            <button class="btn-primary" onclick="redirigirNuevoCliente()">
+                                <i class="fas fa-user-plus"></i>
+                                Nuevo Cliente
+                            </button>
+                        </div>
+                        <div id="resultadosBusquedaCliente" class="resultados-busqueda">
+                            <p class="texto-info">Ingrese un término de búsqueda para encontrar clientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cerrar modal de búsqueda de cliente
+     */
+    window.cerrarModalBuscarCliente = function() {
+        const modal = document.getElementById('modalBuscarCliente');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    /**
+     * Buscar cliente para nueva cita
+     */
+    let timeoutBusqueda = null;
+    window.buscarClienteParaCita = function(termino) {
+        clearTimeout(timeoutBusqueda);
+        
+        const resultadosDiv = document.getElementById('resultadosBusquedaCliente');
+        
+        if (termino.length < 2) {
+            resultadosDiv.innerHTML = '<p class="texto-info">Ingrese al menos 2 caracteres para buscar</p>';
+            return;
+        }
+        
+        resultadosDiv.innerHTML = '<p class="texto-info"><i class="fas fa-spinner fa-spin"></i> Buscando...</p>';
+        
+        timeoutBusqueda = setTimeout(async () => {
+            try {
+                const response = await fetch(`admin/buscar-clientes.php?q=${encodeURIComponent(termino)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.data.length === 0) {
+                        resultadosDiv.innerHTML = '<p class="texto-info">No se encontraron clientes</p>';
+                    } else {
+                        mostrarResultadosClientes(result.data);
+                    }
+                } else {
+                    resultadosDiv.innerHTML = '<p class="texto-error">Error al buscar clientes</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultadosDiv.innerHTML = '<p class="texto-error">Error al realizar la búsqueda</p>';
+            }
+        }, 300);
+    };
+
+    /**
+     * Mostrar resultados de búsqueda de clientes
+     */
+    function mostrarResultadosClientes(clientes) {
+        const resultadosDiv = document.getElementById('resultadosBusquedaCliente');
+        
+        let html = '<div class="lista-clientes">';
+        clientes.forEach(cliente => {
+            html += `
+                <div class="cliente-item">
+                    <div class="cliente-info">
+                        <div class="cliente-nombre">
+                            <i class="fas fa-user"></i> ${escapeHtml(cliente.nombre)}
+                        </div>
+                        <div class="cliente-detalles">
+                            ${cliente.rut ? `<span><i class="fas fa-id-card"></i> ${escapeHtml(cliente.rut)}</span>` : ''}
+                            ${cliente.telefono ? `<span><i class="fas fa-phone"></i> ${escapeHtml(cliente.telefono)}</span>` : ''}
+                            ${cliente.email ? `<span><i class="fas fa-envelope"></i> ${escapeHtml(cliente.email)}</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="btn-accion-seleccionar" onclick="seleccionarCliente(${cliente.id}, '${escapeHtml(cliente.nombre)}')">
+                        <i class="fas fa-check"></i>
+                        Seleccionar
+                    </button>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        resultadosDiv.innerHTML = html;
+    }
+
+    /**
+     * Seleccionar cliente y abrir modal de formulario de cita
+     */
+    window.seleccionarCliente = async function(clienteId, clienteNombre) {
+        citaNuevoClienteId = clienteId;
+        citaNuevoClienteNombre = clienteNombre;
+        
+        // Cargar mascotas del cliente
+        try {
+            const response = await fetch(`admin/listar-mascotas-cliente.php?cliente_id=${clienteId}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                cerrarModalBuscarCliente();
+                mostrarModalFormularioCita(result.data);
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('error', 'Error', 'Error al cargar las mascotas del cliente');
+        }
+    };
+
+    /**
+     * Redirigir a crear nuevo cliente
+     */
+    window.redirigirNuevoCliente = function() {
+        // Guardar datos en sessionStorage para volver
+        sessionStorage.setItem('calendario_nueva_cita', JSON.stringify({
+            fecha: citaNuevaFecha,
+            hora: citaNuevaHora
+        }));
+        
+        window.location.href = 'gestionar-clientes.php?redirect=calendario';
+    };
+
+    /**
+     * Modal 3: Formulario de cita
+     */
+    function mostrarModalFormularioCita(mascotas) {
+        let modal = document.getElementById('modalFormularioCita');
+        if (!modal) {
+            crearModalFormularioCita();
+            modal = document.getElementById('modalFormularioCita');
+        }
+        
+        // Actualizar información
+        document.getElementById('formCitaClienteNombre').textContent = citaNuevoClienteNombre;
+        document.getElementById('formCitaFecha').value = citaNuevaFecha;
+        document.getElementById('formCitaHora').value = citaNuevaHora;
+        
+        // Llenar select de mascotas
+        const selectMascota = document.getElementById('formCitaMascota');
+        selectMascota.innerHTML = '<option value="">Seleccione una mascota</option>';
+        mascotas.forEach(mascota => {
+            const option = document.createElement('option');
+            option.value = mascota.id;
+            option.textContent = `${mascota.nombre} (${mascota.especie})`;
+            selectMascota.appendChild(option);
+        });
+        
+        // Cargar doctores
+        cargarDoctoresEnFormularioCita();
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+    }
+
+    /**
+     * Crear modal de formulario de cita
+     */
+    function crearModalFormularioCita() {
+        const modalHtml = `
+            <div id="modalFormularioCita" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-calendar-plus"></i> Nueva Cita</h2>
+                        <button class="close-modal" onclick="cerrarModalFormularioCita()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="info-cliente-mascota">
+                            <div class="info-item">
+                                <label><i class="fas fa-user"></i> Cliente:</label>
+                                <span id="formCitaClienteNombre"></span>
+                            </div>
+                        </div>
+                        
+                        <form id="formNuevaCita" onsubmit="guardarNuevaCita(event)">
+                            <input type="hidden" id="formCitaFecha">
+                            <input type="hidden" id="formCitaHora">
+                            
+                            <div class="form-group">
+                                <label for="formCitaMascota">Mascota *</label>
+                                <select id="formCitaMascota" required>
+                                    <option value="">Seleccione una mascota</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="formCitaServicio">Servicio *</label>
+                                    <select id="formCitaServicio" required>
+                                        <option value="">Seleccione un servicio</option>
+                                        <option value="consulta">Consulta</option>
+                                        <option value="vacunacion">Vacunación</option>
+                                        <option value="cirugia">Cirugía</option>
+                                        <option value="radiologia">Radiología</option>
+                                        <option value="laboratorio">Laboratorio</option>
+                                        <option value="peluqueria">Peluquería</option>
+                                        <option value="emergencia">Emergencia</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="formCitaDoctor">Doctor</label>
+                                    <select id="formCitaDoctor">
+                                        <option value="">Sin asignar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="formCitaMotivo">Motivo de la consulta</label>
+                                <textarea id="formCitaMotivo" rows="3" placeholder="Describa el motivo de la consulta..."></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="cerrarModalFormularioCita()">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-check"></i> Crear Cita
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cerrar modal de formulario de cita
+     */
+    window.cerrarModalFormularioCita = function() {
+        const modal = document.getElementById('modalFormularioCita');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    /**
+     * Cargar doctores en formulario de cita
+     */
+    async function cargarDoctoresEnFormularioCita() {
+        try {
+            const response = await fetch('api/obtener-doctores.php');
+            const result = await response.json();
+            
+            if (result.success) {
+                const select = document.getElementById('formCitaDoctor');
+                
+                const doctores = result.data.doctores || result.data || [];
+                doctores.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.textContent = doctor.nombre_completo || (doctor.nombre + (doctor.especialidad ? ` - ${doctor.especialidad}` : ''));
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error al cargar doctores:', error);
+        }
+    }
+
+    /**
+     * Guardar nueva cita
+     */
+    window.guardarNuevaCita = async function(event) {
+        event.preventDefault();
+        
+        const datos = {
+            usuario_id: citaNuevoClienteId,
+            mascota_id: parseInt(document.getElementById('formCitaMascota').value),
+            fecha_cita: document.getElementById('formCitaFecha').value,
+            hora_cita: document.getElementById('formCitaHora').value,
+            servicio: document.getElementById('formCitaServicio').value,
+            doctor_id: document.getElementById('formCitaDoctor').value ? parseInt(document.getElementById('formCitaDoctor').value) : null,
+            motivo: document.getElementById('formCitaMotivo').value
+        };
+        
+        try {
+            const response = await fetch('admin/crear-cita.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', result.message);
+                cerrarModalFormularioCita();
+                
+                // Recargar vista diaria
+                if (fechaActualmenteVista) {
+                    verDiaDetalle(fechaActualmenteVista);
+                }
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error al crear cita:', error);
+            showToast('error', 'Error', 'Error al crear la cita');
         }
     };
 
