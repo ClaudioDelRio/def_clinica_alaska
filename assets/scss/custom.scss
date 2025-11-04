@@ -4837,6 +4837,34 @@ textarea {
     }
 }
 
+.cita-motivo {
+    margin: 10px 0;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-left: 3px solid var(--color-dorado);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: var(--color-gris-medio);
+    line-height: 1.4;
+    font-style: italic;
+
+    i {
+        color: var(--color-dorado);
+        margin-right: 8px;
+        font-size: 0.85rem;
+    }
+
+    span {
+        display: inline;
+    }
+}
+
+.cita-estado {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
 .badge-estado {
     padding: 5px 12px;
     border-radius: 20px;

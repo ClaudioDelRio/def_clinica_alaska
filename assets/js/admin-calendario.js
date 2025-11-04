@@ -267,6 +267,12 @@
                         ${cita.doctor_nombre ? `<div><i class="fas fa-user-md"></i> ${escapeHtml(cita.doctor_nombre)}</div>` : ''}
                         <div><i class="fas fa-stethoscope"></i> ${getNombreServicio(cita.servicio)}</div>
                     </div>
+                    ${cita.motivo ? `
+                        <div class="cita-motivo">
+                            <i class="fas fa-comment-medical"></i> 
+                            <span>${escapeHtml(cita.motivo)}</span>
+                        </div>
+                    ` : ''}
                     <div class="cita-estado">
                         <span class="badge-estado ${estadoClass}">${getNombreEstado(cita.estado)}</span>
                     </div>
