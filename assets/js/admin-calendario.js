@@ -253,6 +253,14 @@
                 <div class="cita-item ${estadoClass}">
                     <div class="cita-header">
                         <i class="fas fa-user"></i> ${escapeHtml(cita.cliente_nombre)}
+                        <div class="cita-acciones">
+                            <button class="btn-accion-cita btn-editar" onclick="editarCita(${cita.id})" title="Editar cita">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-accion-cita btn-eliminar" onclick="eliminarCita(${cita.id})" title="Eliminar cita">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="cita-info">
                         <div><i class="fas fa-paw"></i> ${escapeHtml(cita.mascota_nombre)}</div>
@@ -451,6 +459,327 @@
         const hoy = new Date();
         const fecha = hoy.toISOString().split('T')[0];
         verDiaDetalle(fecha);
+    };
+
+    /**
+     * Editar cita
+     */
+    window.editarCita = async function(citaId) {
+        try {
+            // Cargar datos de la cita
+            const response = await fetch(`admin/obtener-cita.php?id=${citaId}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                mostrarModalEditarCita(result.data);
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error al cargar cita:', error);
+            showToast('error', 'Error', 'Error al cargar la cita');
+        }
+    };
+
+    /**
+     * Eliminar cita
+     */
+    window.eliminarCita = async function(citaId) {
+        if (!confirm('¿Está seguro de que desea eliminar esta cita? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('admin/eliminar-cita.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cita_id: citaId })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', result.message);
+                // Recargar vista diaria
+                if (fechaActualmenteVista) {
+                    verDiaDetalle(fechaActualmenteVista);
+                }
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error al eliminar cita:', error);
+            showToast('error', 'Error', 'Error al eliminar la cita');
+        }
+    };
+
+    /**
+     * Mostrar modal para editar cita
+     */
+    function mostrarModalEditarCita(cita) {
+        // Crear modal si no existe
+        let modal = document.getElementById('modalEditarCita');
+        if (!modal) {
+            crearModalEditarCita();
+            modal = document.getElementById('modalEditarCita');
+        }
+        
+        // Llenar formulario con datos de la cita
+        document.getElementById('editCitaId').value = cita.id;
+        document.getElementById('editCitaFecha').value = cita.fecha_cita;
+        document.getElementById('editCitaHoraOriginal').value = cita.hora_cita;
+        document.getElementById('editCitaEstado').value = cita.estado;
+        document.getElementById('editCitaServicio').value = cita.servicio;
+        document.getElementById('editCitaDoctorId').value = cita.doctor_id || '';
+        document.getElementById('editCitaMotivo').value = cita.motivo || '';
+        
+        // Mostrar información del cliente y mascota (solo lectura)
+        document.getElementById('editCitaClienteNombre').textContent = cita.cliente_nombre;
+        document.getElementById('editCitaMascotaNombre').textContent = cita.mascota_nombre;
+        document.getElementById('editCitaMascotaEspecie').textContent = cita.mascota_especie;
+        
+        // Mostrar modal
+        modal.style.display = 'block';
+        
+        // Cargar doctores y horarios disponibles
+        cargarDoctoresEnSelect();
+        cargarHorariosDisponibles(cita.fecha_cita, cita.hora_cita);
+    }
+
+    /**
+     * Crear modal de edición
+     */
+    function crearModalEditarCita() {
+        const modalHtml = `
+            <div id="modalEditarCita" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-edit"></i> Editar Cita</h2>
+                        <button class="close-modal" onclick="cerrarModalEditarCita()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="info-cliente-mascota">
+                            <div class="info-item">
+                                <label><i class="fas fa-user"></i> Cliente:</label>
+                                <span id="editCitaClienteNombre"></span>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fas fa-paw"></i> Mascota:</label>
+                                <span id="editCitaMascotaNombre"></span> (<span id="editCitaMascotaEspecie"></span>)
+                            </div>
+                        </div>
+                        
+                        <form id="formEditarCita" onsubmit="guardarCambiosCita(event)">
+                            <input type="hidden" id="editCitaId">
+                            <input type="hidden" id="editCitaHoraOriginal">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editCitaFecha">Fecha *</label>
+                                    <input type="date" id="editCitaFecha" required onchange="cambioFechaCita()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCitaHora">Hora *</label>
+                                    <select id="editCitaHora" required>
+                                        <option value="">Seleccione una hora</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editCitaEstado">Estado *</label>
+                                    <select id="editCitaEstado" required>
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="confirmada">Confirmada</option>
+                                        <option value="completada">Completada</option>
+                                        <option value="cancelada">Cancelada</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCitaServicio">Servicio *</label>
+                                    <select id="editCitaServicio" required>
+                                        <option value="consulta">Consulta</option>
+                                        <option value="vacunacion">Vacunación</option>
+                                        <option value="cirugia">Cirugía</option>
+                                        <option value="radiologia">Radiología</option>
+                                        <option value="laboratorio">Laboratorio</option>
+                                        <option value="peluqueria">Peluquería</option>
+                                        <option value="emergencia">Emergencia</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="editCitaDoctorId">Doctor</label>
+                                <select id="editCitaDoctorId">
+                                    <option value="">Sin asignar</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="editCitaMotivo">Motivo</label>
+                                <textarea id="editCitaMotivo" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="cerrarModalEditarCita()">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cargar doctores en el select
+     */
+    async function cargarDoctoresEnSelect() {
+        try {
+            const response = await fetch('api/obtener-doctores.php');
+            const result = await response.json();
+            
+            if (result.success) {
+                const select = document.getElementById('editCitaDoctorId');
+                const selectedValue = select.value;
+                
+                // Mantener opción "Sin asignar"
+                select.innerHTML = '<option value="">Sin asignar</option>';
+                
+                // Agregar doctores
+                result.data.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.textContent = doctor.nombre + (doctor.especialidad ? ` - ${doctor.especialidad}` : '');
+                    select.appendChild(option);
+                });
+                
+                // Restaurar valor seleccionado
+                select.value = selectedValue;
+            }
+        } catch (error) {
+            console.error('Error al cargar doctores:', error);
+        }
+    }
+
+    /**
+     * Cargar horarios disponibles para una fecha
+     */
+    async function cargarHorariosDisponibles(fecha, horaActual) {
+        try {
+            const response = await fetch(`admin/obtener-horarios-disponibles.php?fecha=${fecha}`);
+            const result = await response.json();
+            
+            const select = document.getElementById('editCitaHora');
+            select.innerHTML = '<option value="">Seleccione una hora</option>';
+            
+            if (result.success && result.data.horarios_disponibles) {
+                // Agregar horarios disponibles
+                result.data.horarios_disponibles.forEach(horario => {
+                    const option = document.createElement('option');
+                    option.value = horario.hora;
+                    option.textContent = horario.texto;
+                    select.appendChild(option);
+                });
+                
+                // Agregar también la hora actual de la cita (aunque esté ocupada)
+                if (horaActual) {
+                    const horaFormateada = horaActual.substring(0, 5);
+                    // Verificar si ya existe en las opciones
+                    const exists = Array.from(select.options).some(opt => opt.value === horaFormateada);
+                    if (!exists) {
+                        const option = document.createElement('option');
+                        option.value = horaFormateada;
+                        option.textContent = horaFormateada + ' hrs (Hora actual)';
+                        select.appendChild(option);
+                    }
+                    select.value = horaFormateada;
+                }
+            }
+        } catch (error) {
+            console.error('Error al cargar horarios:', error);
+            showToast('error', 'Error', 'Error al cargar los horarios disponibles');
+        }
+    }
+
+    /**
+     * Manejar cambio de fecha en el modal de edición
+     */
+    window.cambioFechaCita = function() {
+        const fecha = document.getElementById('editCitaFecha').value;
+        const horaOriginal = document.getElementById('editCitaHoraOriginal').value;
+        
+        if (fecha) {
+            cargarHorariosDisponibles(fecha, horaOriginal);
+        }
+    };
+
+    /**
+     * Cerrar modal de edición
+     */
+    window.cerrarModalEditarCita = function() {
+        const modal = document.getElementById('modalEditarCita');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    /**
+     * Guardar cambios en la cita
+     */
+    window.guardarCambiosCita = async function(event) {
+        event.preventDefault();
+        
+        const datos = {
+            cita_id: parseInt(document.getElementById('editCitaId').value),
+            fecha_cita: document.getElementById('editCitaFecha').value,
+            hora_cita: document.getElementById('editCitaHora').value,
+            estado: document.getElementById('editCitaEstado').value,
+            servicio: document.getElementById('editCitaServicio').value,
+            doctor_id: document.getElementById('editCitaDoctorId').value ? parseInt(document.getElementById('editCitaDoctorId').value) : null,
+            motivo: document.getElementById('editCitaMotivo').value
+        };
+        
+        try {
+            const response = await fetch('admin/actualizar-cita.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', result.message);
+                cerrarModalEditarCita();
+                
+                // Recargar vista (diaria o mensual según corresponda)
+                if (fechaActualmenteVista) {
+                    verDiaDetalle(fechaActualmenteVista);
+                } else {
+                    cargarCalendario(mesActual, anoActual);
+                }
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error al guardar cambios:', error);
+            showToast('error', 'Error', 'Error al guardar los cambios');
+        }
     };
 
     // Inicializar cuando el DOM esté listo
