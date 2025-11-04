@@ -40,8 +40,18 @@
         const sidebar = document.querySelector('.sidebar');
         if (!sidebar) return;
         
-        // Si hay un botón de menú hamburguesa, agregarlo aquí
-        // Por ahora, la funcionalidad está en CSS
+        // Cerrar sidebar al hacer clic en un enlace en móviles
+        const menuLinks = sidebar.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    // Usar la función global definida en nav-panel.php
+                    if (typeof window.closeSidebar === 'function') {
+                        window.closeSidebar();
+                    }
+                }
+            });
+        });
     }
 
     /**

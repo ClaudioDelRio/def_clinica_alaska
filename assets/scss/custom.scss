@@ -3206,14 +3206,37 @@ body {
     z-index: 999;
 }
 
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
 .sidebar .logo {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 40px;
     color: var(--color-dorado);
     
     i {
         margin-right: 8px;
+    }
+}
+
+.sidebar-close-btn {
+    display: none; // Oculto por defecto en escritorio
+    background: transparent;
+    border: none;
+    color: var(--color-blanco);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(90deg);
     }
 }
 
@@ -3235,6 +3258,59 @@ body {
 
 .sidebar .menu-item.active {
     background: #3498db;
+}
+
+/* Botón hamburguesa para móviles */
+.hamburger-btn {
+    display: none; // Oculto por defecto en escritorio
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: var(--color-azul-oscuro);
+    color: var(--color-blanco);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: #34495e;
+        transform: scale(1.05);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Overlay para cerrar el menú en móviles */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.active {
+        display: block;
+        opacity: 1;
+    }
 }
 
 /* Contenido principal del panel */
@@ -3419,38 +3495,69 @@ body {
 
 /* Responsive para panel admin */
 @media (max-width: 768px) {
+    /* Mostrar botón hamburguesa */
+    .hamburger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Mostrar botón de cerrar en sidebar */
+    .sidebar-close-btn {
+        display: block;
+    }
+
+    /* Ocultar sidebar por defecto en móviles */
     .sidebar {
-        width: 200px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 280px;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
     }
     
+    /* Mostrar sidebar cuando está activo */
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    /* Ajustar contenido principal */
     .main-content {
-        margin-left: 200px;
-        padding: 20px;
+        margin-left: 0;
+        padding: 80px 20px 20px 20px; // Espacio extra arriba para el botón hamburguesa
+        width: 100%;
     }
     
     .stats-grid {
         grid-template-columns: 1fr;
     }
+    
+    /* Ajustar header del panel */
+    .panel-header {
+        padding: 15px 20px;
+        
+        h1 {
+            font-size: 1.4rem;
+        }
+    }
 }
 
 @media (max-width: 600px) {
+    /* Sidebar más estrecho en pantallas muy pequeñas */
     .sidebar {
-        width: 0;
-        overflow: hidden;
-        transition: width 0.3s;
-    }
-    
-    .sidebar.active {
         width: 250px;
     }
     
     .main-content {
-        margin-left: 0;
-        padding: 15px;
+        padding: 80px 15px 15px 15px;
     }
     
-    .panel-header {
-        padding: 15px 20px;
+    /* Ajustes de botón hamburguesa para pantallas pequeñas */
+    .hamburger-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+        top: 15px;
+        left: 15px;
     }
 }
 
