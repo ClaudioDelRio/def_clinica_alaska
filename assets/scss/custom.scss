@@ -4926,6 +4926,10 @@ textarea {
         font-size: 0.95rem;
     }
 
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
     input[type="date"],
     input[type="time"],
     select,
@@ -4980,6 +4984,14 @@ textarea {
             padding: 10px;
             color: var(--color-azul-oscuro);
         }
+    }
+
+    // Estilos específicos para inputs de texto
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+        cursor: text;
     }
 
     // Estilos para textarea
@@ -5209,6 +5221,10 @@ textarea {
     }
 
     .form-group {
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
         input[type="date"],
         input[type="time"],
         select,

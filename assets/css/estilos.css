@@ -4465,6 +4465,10 @@ textarea:focus {
   color: var(--color-azul-oscuro);
   font-size: 0.95rem;
 }
+.form-group input[type=text],
+.form-group input[type=email],
+.form-group input[type=tel],
+.form-group input[type=number],
 .form-group input[type=date],
 .form-group input[type=time],
 .form-group select,
@@ -4480,6 +4484,10 @@ textarea:focus {
   transition: all 0.3s ease;
   cursor: pointer;
 }
+.form-group input[type=text]:focus,
+.form-group input[type=email]:focus,
+.form-group input[type=tel]:focus,
+.form-group input[type=number]:focus,
 .form-group input[type=date]:focus,
 .form-group input[type=time]:focus,
 .form-group select:focus,
@@ -4488,6 +4496,10 @@ textarea:focus {
   border-color: var(--color-dorado);
   box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
 }
+.form-group input[type=text]:hover,
+.form-group input[type=email]:hover,
+.form-group input[type=tel]:hover,
+.form-group input[type=number]:hover,
 .form-group input[type=date]:hover,
 .form-group input[type=time]:hover,
 .form-group select:hover,
@@ -4516,6 +4528,12 @@ textarea:focus {
 .form-group select option {
   padding: 10px;
   color: var(--color-azul-oscuro);
+}
+.form-group input[type=text],
+.form-group input[type=email],
+.form-group input[type=tel],
+.form-group input[type=number] {
+  cursor: text;
 }
 .form-group textarea {
   resize: vertical;
@@ -4712,6 +4730,10 @@ textarea:focus {
     grid-template-columns: 1fr;
     gap: 0;
   }
+  .form-group input[type=text],
+  .form-group input[type=email],
+  .form-group input[type=tel],
+  .form-group input[type=number],
   .form-group input[type=date],
   .form-group input[type=time],
   .form-group select,

@@ -1122,16 +1122,308 @@
     };
 
     /**
-     * Redirigir a crear nuevo cliente
+     * Abrir modal de nuevo cliente
      */
     window.redirigirNuevoCliente = function() {
-        // Guardar datos en sessionStorage para volver
-        sessionStorage.setItem('calendario_nueva_cita', JSON.stringify({
-            fecha: citaNuevaFecha,
-            hora: citaNuevaHora
-        }));
+        cerrarModalBuscarCliente();
+        mostrarModalNuevoCliente();
+    };
+
+    /**
+     * Mostrar modal de nuevo cliente
+     */
+    function mostrarModalNuevoCliente() {
+        let modal = document.getElementById('modalNuevoCliente');
+        if (!modal) {
+            crearModalNuevoCliente();
+            modal = document.getElementById('modalNuevoCliente');
+        }
         
-        window.location.href = 'gestionar-clientes.php?redirect=calendario';
+        // Limpiar formulario
+        document.getElementById('formNuevoCliente').reset();
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+    }
+
+    /**
+     * Crear modal de nuevo cliente
+     */
+    function crearModalNuevoCliente() {
+        const modalHtml = `
+            <div id="modalNuevoCliente" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-user-plus"></i> Nuevo Cliente</h2>
+                        <button class="close-modal" onclick="cerrarModalNuevoCliente()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formNuevoCliente" onsubmit="guardarNuevoCliente(event)">
+                            <div class="form-group">
+                                <label for="nuevoClienteNombre">Nombre Completo *</label>
+                                <input type="text" id="nuevoClienteNombre" required placeholder="Ej: Juan Pérez">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nuevoClienteEmail">Email *</label>
+                                    <input type="email" id="nuevoClienteEmail" required placeholder="ejemplo@correo.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nuevoClienteRut">RUT</label>
+                                    <input type="text" id="nuevoClienteRut" placeholder="12.345.678-9">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nuevoClienteTelefono">Teléfono *</label>
+                                    <input type="tel" id="nuevoClienteTelefono" required placeholder="+56 9 1234 5678">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nuevoClienteDireccion">Dirección</label>
+                                    <input type="text" id="nuevoClienteDireccion" placeholder="Calle, número, comuna">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="volverABuscarCliente()">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Volver
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-arrow-right"></i>
+                                    Continuar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cerrar modal de nuevo cliente
+     */
+    window.cerrarModalNuevoCliente = function() {
+        const modal = document.getElementById('modalNuevoCliente');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    /**
+     * Volver a modal de búsqueda desde nuevo cliente
+     */
+    window.volverABuscarCliente = function() {
+        cerrarModalNuevoCliente();
+        abrirModalBuscarCliente();
+    };
+
+    /**
+     * Guardar nuevo cliente y pasar a crear mascota
+     */
+    window.guardarNuevoCliente = async function(event) {
+        event.preventDefault();
+        
+        const datos = {
+            nombre: document.getElementById('nuevoClienteNombre').value,
+            email: document.getElementById('nuevoClienteEmail').value,
+            rut: document.getElementById('nuevoClienteRut').value,
+            telefono: document.getElementById('nuevoClienteTelefono').value,
+            direccion: document.getElementById('nuevoClienteDireccion').value
+        };
+        
+        try {
+            const response = await fetch('admin/crear-cliente-rapido.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', 'Cliente creado exitosamente');
+                
+                // Guardar datos del cliente
+                citaNuevoClienteId = result.data.id;
+                citaNuevoClienteNombre = result.data.nombre;
+                
+                // Cerrar modal de cliente y abrir modal de mascota
+                cerrarModalNuevoCliente();
+                mostrarModalNuevaMascota();
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('error', 'Error', 'Error al crear el cliente');
+        }
+    };
+
+    /**
+     * Mostrar modal de nueva mascota
+     */
+    function mostrarModalNuevaMascota() {
+        let modal = document.getElementById('modalNuevaMascota');
+        if (!modal) {
+            crearModalNuevaMascota();
+            modal = document.getElementById('modalNuevaMascota');
+        }
+        
+        // Limpiar formulario
+        document.getElementById('formNuevaMascota').reset();
+        
+        // Mostrar nombre del cliente
+        document.getElementById('nuevaMascotaClienteNombre').textContent = citaNuevoClienteNombre;
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+    }
+
+    /**
+     * Crear modal de nueva mascota
+     */
+    function crearModalNuevaMascota() {
+        const modalHtml = `
+            <div id="modalNuevaMascota" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-paw"></i> Nueva Mascota</h2>
+                        <button class="close-modal" onclick="cerrarModalNuevaMascota()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="info-cliente-mascota">
+                            <div class="info-item">
+                                <label><i class="fas fa-user"></i> Dueño:</label>
+                                <span id="nuevaMascotaClienteNombre"></span>
+                            </div>
+                        </div>
+                        
+                        <form id="formNuevaMascota" onsubmit="guardarNuevaMascota(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nuevaMascotaNombre">Nombre de la Mascota *</label>
+                                    <input type="text" id="nuevaMascotaNombre" required placeholder="Ej: Firulais">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nuevaMascotaEspecie">Especie *</label>
+                                    <select id="nuevaMascotaEspecie" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="perro">Perro</option>
+                                        <option value="gato">Gato</option>
+                                        <option value="ave">Ave</option>
+                                        <option value="roedor">Roedor</option>
+                                        <option value="reptil">Reptil</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nuevaMascotaRaza">Raza</label>
+                                    <input type="text" id="nuevaMascotaRaza" placeholder="Ej: Labrador">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nuevaMascotaSexo">Sexo</label>
+                                    <select id="nuevaMascotaSexo">
+                                        <option value="">Seleccione...</option>
+                                        <option value="macho">Macho</option>
+                                        <option value="hembra">Hembra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nuevaMascotaEdad">Edad (años)</label>
+                                    <input type="number" id="nuevaMascotaEdad" min="0" max="30" step="1" placeholder="Ej: 3">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nuevaMascotaPeso">Peso (kg)</label>
+                                    <input type="number" id="nuevaMascotaPeso" min="0" max="200" step="0.1" placeholder="Ej: 15.5">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="cerrarModalNuevaMascota()">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-check"></i>
+                                    Crear Mascota y Continuar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    /**
+     * Cerrar modal de nueva mascota
+     */
+    window.cerrarModalNuevaMascota = function() {
+        const modal = document.getElementById('modalNuevaMascota');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    /**
+     * Guardar nueva mascota y continuar con formulario de cita
+     */
+    window.guardarNuevaMascota = async function(event) {
+        event.preventDefault();
+        
+        const datos = {
+            usuario_id: citaNuevoClienteId,
+            nombre: document.getElementById('nuevaMascotaNombre').value,
+            especie: document.getElementById('nuevaMascotaEspecie').value,
+            raza: document.getElementById('nuevaMascotaRaza').value,
+            sexo: document.getElementById('nuevaMascotaSexo').value,
+            edad: document.getElementById('nuevaMascotaEdad').value ? parseInt(document.getElementById('nuevaMascotaEdad').value) : null,
+            peso: document.getElementById('nuevaMascotaPeso').value ? parseFloat(document.getElementById('nuevaMascotaPeso').value) : null
+        };
+        
+        try {
+            const response = await fetch('admin/crear-mascota-rapido.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', 'Éxito', 'Mascota creada exitosamente');
+                
+                // Cerrar modal de mascota y abrir formulario de cita con la nueva mascota
+                cerrarModalNuevaMascota();
+                mostrarModalFormularioCita([result.data]);
+            } else {
+                showToast('error', 'Error', result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('error', 'Error', 'Error al crear la mascota');
+        }
     };
 
     /**
