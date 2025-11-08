@@ -59,6 +59,8 @@ try {
             c.motivo,
             c.estado,
             c.duracion_minutos,
+            c.usuario_id,
+            c.mascota_id,
             u.nombre AS cliente_nombre,
             u.telefono AS cliente_telefono,
             u.email AS cliente_email,
@@ -99,11 +101,12 @@ try {
     $fechaFinObj = new DateTime($fecha_fin);
     $rangoTexto = $fechaInicioObj->format('d/m/Y') . ' - ' . $fechaFinObj->format('d/m/Y');
 
-    $totalCitas = count($citas);
-    $citasPendientes = count(array_filter($citas, fn($c) => $c['estado'] === 'pendiente'));
-    $citasConfirmadas = count(array_filter($citas, fn($c) => $c['estado'] === 'confirmada'));
-    $citasCompletadas = count(array_filter($citas, fn($c) => $c['estado'] === 'completada'));
-    $citasCanceladas = count(array_filter($citas, fn($c) => $c['estado'] === 'cancelada'));
+    $resumen = obtenerResumenEstadosSemanal($citas);
+    $totalCitas = $resumen['total'];
+    $citasPendientes = $resumen['pendientes'];
+    $citasConfirmadas = $resumen['confirmadas'];
+    $citasCompletadas = $resumen['completadas'];
+    $citasCanceladas = $resumen['canceladas'];
 
     $html = generarHTMLReporteSemanal(
         $nombreMedico,
@@ -314,4 +317,57 @@ function generarHTMLReporteSemanal($nombreMedico, $especialidadMedico, $rangoTex
     </html>';
 
     return $html;
+}
+
+function obtenerResumenEstadosSemanal(array $citas): array
+{
+    $prioridad = [
+        'cancelada' => 1,
+        'pendiente' => 2,
+        'confirmada' => 3,
+        'completada' => 4
+    ];
+
+    $agrupadas = [];
+
+    foreach ($citas as $cita) {
+        $estado = strtolower($cita['estado'] ?? '');
+        if (!isset($prioridad[$estado])) {
+            continue;
+        }
+
+        $clave = ($cita['fecha_cita'] ?? '') . '|' . ($cita['usuario_id'] ?? '') . '|' . ($cita['mascota_id'] ?? '') . '|' . strtolower(trim($cita['motivo'] ?? ''));
+
+        if (!isset($agrupadas[$clave]) || $prioridad[$estado] > $prioridad[$agrupadas[$clave]]) {
+            $agrupadas[$clave] = $estado;
+        }
+    }
+
+    $resultado = [
+        'total' => 0,
+        'pendientes' => 0,
+        'confirmadas' => 0,
+        'completadas' => 0,
+        'canceladas' => 0
+    ];
+
+    foreach ($agrupadas as $estado) {
+        $resultado['total']++;
+        switch ($estado) {
+            case 'pendiente':
+                $resultado['pendientes']++;
+                break;
+            case 'confirmada':
+                $resultado['confirmadas']++;
+                break;
+            case 'completada':
+                $resultado['completadas']++;
+                break;
+            case 'cancelada':
+                $resultado['canceladas']++;
+                break;
+        }
+    }
+
+    return $resultado;
 }

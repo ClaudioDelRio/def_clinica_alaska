@@ -59,6 +59,8 @@ try {
             c.motivo,
             c.estado,
             c.duracion_minutos,
+            c.usuario_id,
+            c.mascota_id,
             u.nombre AS cliente_nombre,
             u.telefono AS cliente_telefono,
             u.email AS cliente_email,
@@ -99,12 +101,13 @@ try {
     $fechaFormateada = strftime('%A, %d de %B de %Y', strtotime($fecha));
     $fechaFormateada = ucfirst($fechaFormateada);
 
-    // Calcular estadísticas
-    $totalCitas = count($citas);
-    $citasPendientes = count(array_filter($citas, fn($c) => $c['estado'] === 'pendiente'));
-    $citasConfirmadas = count(array_filter($citas, fn($c) => $c['estado'] === 'confirmada'));
-    $citasCompletadas = count(array_filter($citas, fn($c) => $c['estado'] === 'completada'));
-    $citasCanceladas = count(array_filter($citas, fn($c) => $c['estado'] === 'cancelada'));
+    // Calcular estadísticas con agrupación por cita única
+    $resumen = obtenerResumenEstados($citas);
+    $totalCitas = $resumen['total'];
+    $citasPendientes = $resumen['pendientes'];
+    $citasConfirmadas = $resumen['confirmadas'];
+    $citasCompletadas = $resumen['completadas'];
+    $citasCanceladas = $resumen['canceladas'];
 
     // Generar HTML del reporte
     $html = generarHTMLReporte(
@@ -541,5 +544,58 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
     $html .= '</body></html>';
     
     return $html;
+}
+
+function obtenerResumenEstados(array $citas): array
+{
+    $prioridad = [
+        'cancelada' => 1,
+        'pendiente' => 2,
+        'confirmada' => 3,
+        'completada' => 4
+    ];
+
+    $agrupadas = [];
+
+    foreach ($citas as $cita) {
+        $estado = strtolower($cita['estado'] ?? '');
+        if (!isset($prioridad[$estado])) {
+            continue;
+        }
+
+        $clave = ($cita['fecha_cita'] ?? '') . '|' . ($cita['usuario_id'] ?? '') . '|' . ($cita['mascota_id'] ?? '') . '|' . strtolower(trim($cita['motivo'] ?? ''));
+
+        if (!isset($agrupadas[$clave]) || $prioridad[$estado] > $prioridad[$agrupadas[$clave]]) {
+            $agrupadas[$clave] = $estado;
+        }
+    }
+
+    $resultado = [
+        'total' => 0,
+        'pendientes' => 0,
+        'confirmadas' => 0,
+        'completadas' => 0,
+        'canceladas' => 0
+    ];
+
+    foreach ($agrupadas as $estado) {
+        $resultado['total']++;
+        switch ($estado) {
+            case 'pendiente':
+                $resultado['pendientes']++;
+                break;
+            case 'confirmada':
+                $resultado['confirmadas']++;
+                break;
+            case 'completada':
+                $resultado['completadas']++;
+                break;
+            case 'cancelada':
+                $resultado['canceladas']++;
+                break;
+        }
+    }
+
+    return $resultado;
 }
 
