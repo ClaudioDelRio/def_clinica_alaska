@@ -59,42 +59,29 @@ $esAdmin = $_SESSION['medico_es_admin'] ?? false;
                     </div>
 
                     <!-- Futuros reportes (deshabilitados por ahora) -->
-                    <div class="reporte-card disabled">
+                    <div class="reporte-card">
                         <div class="reporte-icon">
                             <i class="fas fa-calendar-week"></i>
                         </div>
                         <div class="reporte-content">
-                            <h3>Reporte Semanal</h3>
-                            <p>Resumen semanal de citas (Próximamente)</p>
+                            <h3>Reporte por Rango</h3>
+                            <p>Resumen de citas</p>
                         </div>
-                        <button class="btn-generar-reporte" disabled>
-                            <i class="fas fa-lock"></i> Próximamente
+                        <button class="btn-generar-reporte" onclick="mostrarModalReporteSemanal()">
+                            <i class="fas fa-file-pdf"></i> Generar
                         </button>
                     </div>
 
-                    <div class="reporte-card disabled">
+                    <div class="reporte-card">
                         <div class="reporte-icon">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
                         <div class="reporte-content">
                             <h3>Reporte Mensual</h3>
-                            <p>Estadísticas mensuales (Próximamente)</p>
+                            <p>Estadísticas y citas del mes seleccionado</p>
                         </div>
-                        <button class="btn-generar-reporte" disabled>
-                            <i class="fas fa-lock"></i> Próximamente
-                        </button>
-                    </div>
-
-                    <div class="reporte-card disabled">
-                        <div class="reporte-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="reporte-content">
-                            <h3>Reporte de Ingresos</h3>
-                            <p>Análisis financiero (Próximamente)</p>
-                        </div>
-                        <button class="btn-generar-reporte" disabled>
-                            <i class="fas fa-lock"></i> Próximamente
+                        <button class="btn-generar-reporte" onclick="mostrarModalReporteMensual()">
+                            <i class="fas fa-file-pdf"></i> Generar
                         </button>
                     </div>
                 </div>
@@ -131,7 +118,7 @@ $esAdmin = $_SESSION['medico_es_admin'] ?? false;
                         <label for="medico_id">
                             <i class="fas fa-user-md"></i> Seleccionar Médico *
                         </label>
-                        <select id="medico_id" name="medico_id" required>
+                        <select id="medico_diario" name="medico_diario" required>
                             <option value="">-- Seleccione un médico --</option>
                         </select>
                     </div>
@@ -140,7 +127,7 @@ $esAdmin = $_SESSION['medico_es_admin'] ?? false;
                         <label for="fecha_reporte">
                             <i class="fas fa-calendar"></i> Fecha del Reporte *
                         </label>
-                        <input type="date" id="fecha_reporte" name="fecha_reporte" required>
+                        <input type="date" id="fecha_diaria" name="fecha_diaria" required>
                     </div>
 
                     <div class="info-box">
@@ -157,6 +144,108 @@ $esAdmin = $_SESSION['medico_es_admin'] ?? false;
                     <i class="fas fa-times"></i> Cancelar
                 </button>
                 <button type="button" class="btn-primary" onclick="generarReporteDiario()">
+                    <i class="fas fa-file-pdf"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Reporte Semanal -->
+    <div class="modal-overlay" id="modalReporteSemanal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-week"></i> Generar Reporte Por rango</h2>
+                <button class="modal-close" onclick="cerrarModalReporteSemanal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formReporteSemanal">
+                    <div class="form-group">
+                        <label for="medico_semanal">
+                            <i class="fas fa-user-md"></i> Seleccionar Médico *
+                        </label>
+                        <select id="medico_semanal" name="medico_semanal" required>
+                            <option value="">-- Seleccione un médico --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_inicio_semanal">
+                                <i class="fas fa-calendar-day"></i> Fecha inicio *
+                            </label>
+                            <input type="date" id="fecha_inicio_semanal" name="fecha_inicio_semanal" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_fin_semanal">
+                                <i class="fas fa-calendar-check"></i> Fecha fin *
+                            </label>
+                            <input type="date" id="fecha_fin_semanal" name="fecha_fin_semanal" required>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-text">
+                            <strong>Información del reporte:</strong>
+                            <p>Genera un PDF con todas las citas del rango seleccionado. Usa la fecha de inicio para definir la semana; puedes ajustar la fecha de término según necesites.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="cerrarModalReporteSemanal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn-primary" onclick="generarReporteSemanal()">
+                    <i class="fas fa-file-pdf"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Reporte Mensual -->
+    <div class="modal-overlay" id="modalReporteMensual">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-alt"></i> Generar Reporte Mensual</h2>
+                <button class="modal-close" onclick="cerrarModalReporteMensual()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formReporteMensual">
+                    <div class="form-group">
+                        <label for="medico_mensual">
+                            <i class="fas fa-user-md"></i> Seleccionar Médico *
+                        </label>
+                        <select id="medico_mensual" name="medico_mensual" required>
+                            <option value="">-- Seleccione un médico --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mes_mensual">
+                            <i class="fas fa-calendar"></i> Mes del Reporte *
+                        </label>
+                        <input type="month" id="mes_mensual" name="mes_mensual" required>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-text">
+                            <strong>Información del reporte:</strong>
+                            <p>Genera un PDF con todas las citas del mes seleccionado, junto con estadísticas de cada estado de cita.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="cerrarModalReporteMensual()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn-primary" onclick="generarReporteMensual()">
                     <i class="fas fa-file-pdf"></i> Generar PDF
                 </button>
             </div>

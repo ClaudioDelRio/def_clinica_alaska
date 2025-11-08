@@ -4,37 +4,83 @@
  */
 
 (function () {
-    const MODAL_ID = 'modalReporteDiario';
-    const FORM_ID = 'formReporteDiario';
-    const SELECT_MEDICO_ID = 'medico_id';
-    const INPUT_FECHA_ID = 'fecha_reporte';
-
-    let modal;
-    let form;
-    let selectMedico;
-    let inputFecha;
-
     console.debug('[Reportes] admin-reportes.js cargado');
+
+    const modals = {
+        diario: document.getElementById('modalReporteDiario'),
+        semanal: document.getElementById('modalReporteSemanal'),
+        mensual: document.getElementById('modalReporteMensual')
+    };
+
+    const forms = {
+        diario: document.getElementById('formReporteDiario'),
+        semanal: document.getElementById('formReporteSemanal'),
+        mensual: document.getElementById('formReporteMensual')
+    };
+
+    const selectsMedico = {
+        diario: document.getElementById('medico_diario'),
+        semanal: document.getElementById('medico_semanal'),
+        mensual: document.getElementById('medico_mensual')
+    };
+
+    const inputsFecha = {
+        diario: document.getElementById('fecha_diaria'),
+        semanaInicio: document.getElementById('fecha_inicio_semanal'),
+        semanaFin: document.getElementById('fecha_fin_semanal'),
+        mes: document.getElementById('mes_mensual')
+    };
+
     document.addEventListener('DOMContentLoaded', initReportes);
 
     function initReportes() {
-        modal = document.getElementById(MODAL_ID);
-        form = document.getElementById(FORM_ID);
-        selectMedico = document.getElementById(SELECT_MEDICO_ID);
-        inputFecha = document.getElementById(INPUT_FECHA_ID);
-
-        if (!modal || !form || !selectMedico || !inputFecha) {
-            console.warn('[Reportes] Elementos del modal no encontrados. Verifica la estructura del HTML.');
+        if (!modals.diario || !forms.diario || !selectsMedico.diario || !inputsFecha.diario) {
+            console.warn('[Reportes] Elementos base del reporte diario no encontrados. Verifica la estructura del HTML.');
             return;
         }
 
-        setFechaActual();
+        establecerFechasIniciales();
         cargarMedicos();
         document.addEventListener('keydown', manejarEscape);
     }
 
-    function setFechaActual() {
-        inputFecha.value = new Date().toISOString().split('T')[0];
+    function establecerFechasIniciales() {
+        setFechaDiaria();
+        setSemanaActual();
+        setMesActual();
+    }
+
+    function setFechaDiaria() {
+        if (!inputsFecha.diario) return;
+        inputsFecha.diario.value = formatearFechaInput(new Date());
+    }
+
+    function setSemanaActual() {
+        if (!inputsFecha.semanaInicio || !inputsFecha.semanaFin) return;
+        const hoy = new Date();
+        const diaSemana = hoy.getDay();
+        const diferenciaInicio = diaSemana === 0 ? -6 : 1 - diaSemana;
+        const fechaInicio = new Date(hoy);
+        fechaInicio.setDate(hoy.getDate() + diferenciaInicio);
+        const fechaFin = new Date(fechaInicio);
+        fechaFin.setDate(fechaInicio.getDate() + 6);
+        inputsFecha.semanaInicio.value = formatearFechaInput(fechaInicio);
+        inputsFecha.semanaFin.value = formatearFechaInput(fechaFin);
+    }
+
+    function setMesActual() {
+        if (!inputsFecha.mes) return;
+        inputsFecha.mes.value = formatearMesInput(new Date());
+    }
+
+    function formatearFechaInput(fecha) {
+        return fecha.toISOString().split('T')[0];
+    }
+
+    function formatearMesInput(fecha) {
+        const year = fecha.getFullYear();
+        const month = String(fecha.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
     }
 
     async function cargarMedicos() {
@@ -42,25 +88,26 @@
             const response = await fetch('api/obtener-doctores.php');
             const data = await response.json();
 
-            // Reiniciar opciones
-            selectMedico.innerHTML = '<option value="">-- Seleccione un médico --</option>';
-
             const medicos =
                 (data?.data && Array.isArray(data.data.doctores) ? data.data.doctores : null) ||
                 (Array.isArray(data?.medicos) ? data.medicos : null);
 
             if (data.success && medicos) {
-                // Opción para todos los médicos
-                const optionTodos = document.createElement('option');
-                optionTodos.value = 'todos';
-                optionTodos.textContent = '📋 Todos los médicos';
-                selectMedico.appendChild(optionTodos);
+                Object.values(selectsMedico).forEach((select) => {
+                    if (!select) return;
+                    select.innerHTML = '<option value="">-- Seleccione un médico --</option>';
 
-                medicos.forEach((medico) => {
-                    const option = document.createElement('option');
-                    option.value = medico.id;
-                    option.textContent = `${medico.nombre}${medico.especialidad ? ' - ' + medico.especialidad : ''}`;
-                    selectMedico.appendChild(option);
+                    const optionTodos = document.createElement('option');
+                    optionTodos.value = 'todos';
+                    optionTodos.textContent = '📋 Todos los médicos';
+                    select.appendChild(optionTodos);
+
+                    medicos.forEach((medico) => {
+                        const option = document.createElement('option');
+                        option.value = medico.id;
+                        option.textContent = `${medico.nombre}${medico.especialidad ? ' - ' + medico.especialidad : ''}`;
+                        select.appendChild(option);
+                    });
                 });
             } else {
                 mostrarToast('info', 'Información', 'No se encontraron médicos activos.');
@@ -72,31 +119,59 @@
     }
 
     function manejarEscape(event) {
-        if (event.key === 'Escape' && modal && modal.classList.contains('show')) {
-            cerrarModalReporteDiario();
+        if (event.key !== 'Escape') return;
+
+        Object.entries(modals).forEach(([clave, modal]) => {
+            if (modal && modal.classList.contains('show')) {
+                cerrarModal(clave);
+            }
+        });
+    }
+
+    function abrirModal(tipo) {
+        const modal = modals[tipo];
+        if (!modal) return;
+        modal.classList.add('show');
+    }
+
+    function cerrarModal(tipo) {
+        const modal = modals[tipo];
+        const form = forms[tipo];
+        if (!modal || !form) return;
+        modal.classList.remove('show');
+        form.reset();
+
+        switch (tipo) {
+            case 'diario':
+                setFechaDiaria();
+                break;
+            case 'semanal':
+                setSemanaActual();
+                break;
+            case 'mensual':
+                setMesActual();
+                break;
+            default:
+                break;
         }
     }
 
     // Funciones expuestas globalmente para los atributos onclick
-    window.mostrarModalReporteDiario = function mostrarModalReporteDiario() {
-        console.debug('[Reportes] mostrarModalReporteDiario llamado');
-        if (!modal) return;
-        console.debug('[Reportes] Estado previo modal:', modal.className);
-        modal.classList.add('show');
-        console.debug('[Reportes] Clase agregada, estado actual:', modal.className);
-    };
+    window.mostrarModalReporteDiario = () => abrirModal('diario');
+    window.cerrarModalReporteDiario = () => cerrarModal('diario');
 
-    window.cerrarModalReporteDiario = function cerrarModalReporteDiario() {
-        console.debug('[Reportes] cerrarModalReporteDiario llamado');
-        if (!modal) return;
-        modal.classList.remove('show');
-        form.reset();
-        setFechaActual();
-    };
+    window.mostrarModalReporteSemanal = () => abrirModal('semanal');
+    window.cerrarModalReporteSemanal = () => cerrarModal('semanal');
+
+    window.mostrarModalReporteMensual = () => abrirModal('mensual');
+    window.cerrarModalReporteMensual = () => cerrarModal('mensual');
 
     window.generarReporteDiario = function generarReporteDiario() {
         console.debug('[Reportes] generarReporteDiario llamado');
-        if (!form || !selectMedico || !inputFecha) return;
+        const form = forms.diario;
+        const selectMedico = selectsMedico.diario;
+        const fecha = inputsFecha.diario;
+        if (!form || !selectMedico || !fecha) return;
 
         if (!form.checkValidity()) {
             form.reportValidity();
@@ -104,17 +179,67 @@
         }
 
         const medicoId = selectMedico.value;
-        const fecha = inputFecha.value;
 
         if (!medicoId) {
             alert('Por favor, selecciona un médico');
             return;
         }
 
-        const url = `admin/reportes/generar-reporte-diario.php?medico_id=${encodeURIComponent(medicoId)}&fecha=${encodeURIComponent(fecha)}`;
-        console.debug('[Reportes] Abriendo URL:', url);
+        const url = `admin/reportes/generar-reporte-diario.php?medico_id=${encodeURIComponent(medicoId)}&fecha=${encodeURIComponent(fecha.value)}`;
         window.open(url, '_blank');
-        window.cerrarModalReporteDiario();
+        cerrarModal('diario');
+    };
+
+    window.generarReporteSemanal = function generarReporteSemanal() {
+        console.debug('[Reportes] generarReporteSemanal llamado');
+        const form = forms.semanal;
+        const selectMedico = selectsMedico.semanal;
+        const fechaInicio = inputsFecha.semanaInicio;
+        const fechaFin = inputsFecha.semanaFin;
+
+        if (!form || !selectMedico || !fechaInicio || !fechaFin) return;
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        if (!selectMedico.value) {
+            alert('Por favor, selecciona un médico');
+            return;
+        }
+
+        if (fechaFin.value < fechaInicio.value) {
+            alert('La fecha de término no puede ser anterior a la fecha de inicio');
+            return;
+        }
+
+        const url = `admin/reportes/generar-reporte-semanal.php?medico_id=${encodeURIComponent(selectMedico.value)}&fecha_inicio=${encodeURIComponent(fechaInicio.value)}&fecha_fin=${encodeURIComponent(fechaFin.value)}`;
+        window.open(url, '_blank');
+        cerrarModal('semanal');
+    };
+
+    window.generarReporteMensual = function generarReporteMensual() {
+        console.debug('[Reportes] generarReporteMensual llamado');
+        const form = forms.mensual;
+        const selectMedico = selectsMedico.mensual;
+        const inputMes = inputsFecha.mes;
+
+        if (!form || !selectMedico || !inputMes) return;
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        if (!selectMedico.value) {
+            alert('Por favor, selecciona un médico');
+            return;
+        }
+
+        const url = `admin/reportes/generar-reporte-mensual.php?medico_id=${encodeURIComponent(selectMedico.value)}&mes=${encodeURIComponent(inputMes.value)}`;
+        window.open(url, '_blank');
+        cerrarModal('mensual');
     };
 
     // Fallback simple para mostrar toasts si la función global no existe
@@ -126,4 +251,3 @@
         }
     }
 })();
-

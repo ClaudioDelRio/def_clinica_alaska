@@ -4698,6 +4698,7 @@ textarea:focus {
 .form-group input[type=number],
 .form-group input[type=date],
 .form-group input[type=time],
+.form-group input[type=month],
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -4717,6 +4718,7 @@ textarea:focus {
 .form-group input[type=number]:focus,
 .form-group input[type=date]:focus,
 .form-group input[type=time]:focus,
+.form-group input[type=month]:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
@@ -4729,20 +4731,24 @@ textarea:focus {
 .form-group input[type=number]:hover,
 .form-group input[type=date]:hover,
 .form-group input[type=time]:hover,
+.form-group input[type=month]:hover,
 .form-group select:hover,
 .form-group textarea:hover {
   border-color: var(--color-dorado);
 }
-.form-group input[type=date] {
+.form-group input[type=date],
+.form-group input[type=month] {
   position: relative;
   padding-right: 40px;
 }
-.form-group input[type=date]::-webkit-calendar-picker-indicator {
+.form-group input[type=date]::-webkit-calendar-picker-indicator,
+.form-group input[type=month]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 0.6;
   transition: opacity 0.3s ease;
 }
-.form-group input[type=date]::-webkit-calendar-picker-indicator:hover {
+.form-group input[type=date]::-webkit-calendar-picker-indicator:hover,
+.form-group input[type=month]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
 .form-group select {
@@ -4759,7 +4765,8 @@ textarea:focus {
 .form-group input[type=text],
 .form-group input[type=email],
 .form-group input[type=tel],
-.form-group input[type=number] {
+.form-group input[type=number],
+.form-group input[type=month] {
   cursor: text;
 }
 .form-group textarea {

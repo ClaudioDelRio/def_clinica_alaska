@@ -170,11 +170,17 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
             }
             
             .header {
-                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-                color: white;
+                background: #f3f3f3;
+                color: #333;
                 padding: 20px;
                 text-align: center;
                 margin-bottom: 20px;
+                border-radius: 10px;
+            }
+            
+            .header h1,
+            .header p {
+                color: #333;
             }
             
             .header h1 {

@@ -5184,6 +5184,7 @@ textarea {
     input[type="number"],
     input[type="date"],
     input[type="time"],
+    input[type="month"],
     select,
     textarea {
         width: 100%;
@@ -5209,7 +5210,8 @@ textarea {
     }
 
     // Estilos especiales para input date
-    input[type="date"] {
+    input[type="date"],
+    input[type="month"] {
         position: relative;
         padding-right: 40px;
 
@@ -5242,7 +5244,8 @@ textarea {
     input[type="text"],
     input[type="email"],
     input[type="tel"],
-    input[type="number"] {
+    input[type="number"],
+    input[type="month"] {
         cursor: text;
     }
 
