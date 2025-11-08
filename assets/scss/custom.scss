@@ -5523,3 +5523,16 @@ textarea {
         justify-content: center;
     }
 }
+
+/* ============================================
+   AJUSTE MODAL DE LOGIN/REGISTRO
+   ============================================ */
+
+// Ajuste de posición del enlace "¿Ya tienes cuenta? Inicia sesión"
+.toggle-link {
+    bottom: 27px; // Movido 15px más abajo
+}
+
+.signin-link {
+    left: 52px; // Movido 30px más a la izquierda (era 118px)
+}

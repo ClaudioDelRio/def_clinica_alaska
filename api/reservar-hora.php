@@ -4,7 +4,7 @@
    Clínica Veterinaria Alaska Pets Center
    ============================================ */
 
-require_once 'configuracion.php';
+require_once __DIR__ . '/../config/configuracion.php';
 
 // Configurar headers CORS
 header('Access-Control-Allow-Origin: *');

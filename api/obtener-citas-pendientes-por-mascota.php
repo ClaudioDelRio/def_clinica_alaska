@@ -4,7 +4,7 @@
    Devuelve cantidad de citas pendientes/confirmadas futuras y total relacionadas
    ============================================ */
 
-require_once 'configuracion.php';
+require_once __DIR__ . '/../config/configuracion.php';
 
 // CORS
 header('Access-Control-Allow-Origin: *');

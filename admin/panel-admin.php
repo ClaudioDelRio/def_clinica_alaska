@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../api/configuracion.php';
+require_once __DIR__ . '/../config/configuracion.php';
 
 // Verificar si el médico está logueado
 if (!isset($_SESSION['medico_id'])) {

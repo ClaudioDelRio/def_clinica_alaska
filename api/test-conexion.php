@@ -89,7 +89,7 @@ echo "<hr>";
 // ============================================
 echo "<h3>🔌 Prueba 3: Clase DB Custom</h3>";
 try {
-    require_once __DIR__ . '/db.php';
+    require_once __DIR__ . '/../config/db.php';
     $db = new DB($host, $user, $pass, $dbname, $charset);
     
     echo "✅ <strong style='color:green;'>Clase DB conectada exitosamente</strong><br>";

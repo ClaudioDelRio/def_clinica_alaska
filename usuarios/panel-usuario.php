@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../api/configuracion.php';
+require_once __DIR__ . '/../config/configuracion.php';
 
 // Verificación de sesión del lado del servidor
 if (!estaLogueado()) {

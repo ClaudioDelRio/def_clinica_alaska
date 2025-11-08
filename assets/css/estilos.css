@@ -4998,5 +4998,15 @@ textarea:focus {
     justify-content: center;
   }
 }
+/* ============================================
+   AJUSTE MODAL DE LOGIN/REGISTRO
+   ============================================ */
+.toggle-link {
+  bottom: 27px;
+}
+
+.signin-link {
+  left: 52px;
+}
 
 /*# sourceMappingURL=estilos.css.map */

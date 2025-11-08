@@ -4,7 +4,7 @@
  * Clínica Veterinaria Alaska Pets Center
  */
 
-require_once __DIR__ . '/../api/configuracion.php';
+require_once __DIR__ . '/../config/configuracion.php';
 
 // Si ya está logueado, redirigir al panel
 if (isset($_SESSION['medico_id'])) {
