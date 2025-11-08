@@ -166,6 +166,7 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
                 font-size: 11px;
                 color: #333;
                 line-height: 1.4;
+                margin: 20px 30px;
             }
             
             .header {
@@ -311,6 +312,12 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
                 font-weight: 600;
                 font-size: 10px;
             }
+
+            .hora-cell {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
             
             .estado-badge {
                 display: inline-block;
@@ -398,8 +405,8 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
     // Header
     $html .= '
         <div class="header">
-            <h1>🏥 Clínica Veterinaria Alaska Pets Center</h1>
-            <p>Reporte Diario de Citas</p>
+            <h1 style="color: #333;">Informe Diario de Citas</h1>
+            <p style="color: #333;">Clínica Veterinaria Alaska Pets Center</p>
         </div>';
     
     // Información del reporte
@@ -446,7 +453,7 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
         </div>';
     
     // Tabla de citas
-    $html .= '<h2 class="section-title">📋 Detalle de Citas</h2>';
+    $html .= '<h2 class="section-title">Detalle de Citas</h2>';
     
     if (empty($citas)) {
         $html .= '<div class="no-citas">No hay citas registradas para este médico en la fecha seleccionada.</div>';
@@ -468,15 +475,13 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
         foreach ($citas as $cita) {
             $hora = $cita['hora_cita'] ? date('H:i', strtotime($cita['hora_cita'])) : '';
             $duracion = $cita['duracion_minutos'] ?? 30;
-            $duracionTexto = $duracion > 30 ? ' <span class="duracion-badge">' . $duracion . ' min</span>' : '';
+            $horaContenido = '<div class="hora-cell"><span class="hora-badge">' . $hora . '</span>';
+            if ($duracion > 30) {
+                $horaContenido .= '<span class="duracion-badge">' . $duracion . ' min</span>';
+            }
+            $horaContenido .= '</div>';
             
             // Icono de especie
-            $especieIcon = match($cita['mascota_especie']) {
-                'perro' => '🐕',
-                'gato' => '🐈',
-                default => '🐾'
-            };
-            
             // Traducir servicio
             $servicios = [
                 'consulta' => 'Consulta',
@@ -491,7 +496,7 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
             $servicioTexto = $servicios[$servicioKey] ?? ucfirst($servicioKey);
             
             $html .= '<tr>';
-            $html .= '<td><span class="hora-badge">' . $hora . '</span>' . $duracionTexto . '</td>';
+            $html .= '<td>' . $horaContenido . '</td>';
             
             if ($todosMedicos) {
                 $medicoNombreCita = $cita['medico_nombre'] ?? 'Sin asignar';
@@ -501,7 +506,7 @@ function generarHTMLReporte($nombreMedico, $especialidadMedico, $fechaFormateada
             $html .= '<td><strong>' . htmlspecialchars($cita['cliente_nombre']) . '</strong><br>';
             $html .= '<small>' . htmlspecialchars($cita['cliente_telefono']) . '</small></td>';
             
-            $html .= '<td>' . $especieIcon . ' <strong>' . htmlspecialchars($cita['mascota_nombre']) . '</strong><br>';
+            $html .= '<td><strong>' . htmlspecialchars($cita['mascota_nombre']) . '</strong><br>';
             $html .= '<small>' . htmlspecialchars($cita['mascota_raza']) . '</small></td>';
             
             $html .= '<td><span class="servicio-tag">' . $servicioTexto . '</span></td>';
