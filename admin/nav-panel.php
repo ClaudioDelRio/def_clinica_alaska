@@ -50,9 +50,11 @@ $pageActive = $pageActive ?? 'dashboard';
             <i class="fas fa-calendar-check"></i> Citas
         </div>
     </a>
-    <div class="menu-item">
-        <i class="fas fa-chart-bar"></i> Reportes
-    </div>
+    <a href="admin/reportes/gestionar-reportes.php" style="text-decoration: none; color: inherit; display: block;">
+        <div class="menu-item <?php echo $pageActive === 'reportes' ? 'active' : ''; ?>">
+            <i class="fas fa-file-pdf"></i> Reportes
+        </div>
+    </a>
     <div class="menu-item">
         <i class="fas fa-cog"></i> Configuración
     </div>
