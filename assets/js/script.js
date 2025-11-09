@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para abrir el modal de login
     function abrirModal() {
-        modalLogin.classList.add('active');
+        modalLogin.classList.add('active', 'show');
         document.body.style.overflow = 'hidden'; // Evita el scroll del body
         
         // En móviles, asegurar que muestra el formulario de login centrado
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para cerrar el modal de login
     function cerrarModal() {
-        modalLogin.classList.remove('active');
+        modalLogin.classList.remove('active', 'show');
         document.body.style.overflow = '';
         // Resetear a la vista de Sign In después de cerrar
         setTimeout(() => {
