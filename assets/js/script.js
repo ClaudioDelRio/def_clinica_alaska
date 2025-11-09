@@ -377,29 +377,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para mostrar mensajes de error/éxito
     function mostrarMensaje(mensaje, tipo = 'info') {
-        // Crear elemento de mensaje
-        const mensajeDiv = document.createElement('div');
-        mensajeDiv.className = `mensaje-${tipo}`;
-        mensajeDiv.textContent = mensaje;
-        mensajeDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: ${tipo === 'success' ? '#4CAF50' : tipo === 'error' ? '#f44336' : '#2196F3'};
-            color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 10000;
-            animation: slideIn 0.3s ease;
-        `;
+        let toastContainer = document.getElementById('toastContainer');
         
-        document.body.appendChild(mensajeDiv);
-        
-        // Remover después de 4 segundos
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        const tipoNormalizado = ['success', 'error', 'info'].includes(tipo) ? tipo : 'info';
+        toast.className = `toast-message toast-${tipoNormalizado}`;
+        toast.textContent = mensaje;
+
+        toastContainer.appendChild(toast);
+
+        // Remover después de 4 segundos con animación de salida
         setTimeout(() => {
-            mensajeDiv.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => mensajeDiv.remove(), 300);
+            toast.style.animation = 'toastOut 0.3s forwards ease';
+            toast.addEventListener('animationend', () => {
+                toast.remove();
+                if (toastContainer.children.length === 0) {
+                    toastContainer.remove();
+                }
+            }, { once: true });
         }, 4000);
     }
     
