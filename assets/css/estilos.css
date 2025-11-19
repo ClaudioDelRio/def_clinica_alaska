@@ -2014,8 +2014,9 @@ body {
     margin-top: 15px;
   }
   .toggle-link {
-    margin-top: 20px;
+    margin-top: 36px;
     font-size: 0.8rem;
+    left: 0 !important;
   }
   .modal-close {
     top: 12px;
