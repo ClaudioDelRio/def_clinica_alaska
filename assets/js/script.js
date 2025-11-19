@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const signinLink = modalLogin.querySelector('.signin-link');
     
     // Botones de agendar (usando IDs específicos + clase)
-    const botonesAgendar = document.querySelectorAll('#btnAgendarHero, #btnAgendarFooter, .boton-secundario');
+    const botonesAgendar = document.querySelectorAll('#btnAgendarHero, #btnAgendarFooter, #btnAgendarDoctores, .boton-secundario');
     
     // Función para abrir el modal de login
     function abrirModal() {
