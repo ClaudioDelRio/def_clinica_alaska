@@ -500,6 +500,9 @@ function crearItemHistorial(cita) {
     const titulo = `${cita.servicio} - ${cita.mascota_nombre}`;
     const doctorInfo = cita.doctor_nombre ? cita.doctor_nombre : 'Sin doctor asignado';
     
+    // Solo mostrar botón eliminar si la cita está pendiente o confirmada
+    const puedeEliminar = cita.estado === 'pendiente' || cita.estado === 'confirmada';
+    
     item.innerHTML = `
         <div class="dashboard-historial-left">
             <div class="dashboard-historial-icon">
@@ -510,13 +513,63 @@ function crearItemHistorial(cita) {
                 <p>👨‍⚕️ ${doctorInfo}</p>
             </div>
         </div>
-        <div>
-            <span class="dashboard-badge ${cita.badge_class}">${cita.estado_texto}</span>
-            <p class="dashboard-historial-date">${cita.fecha_formateada} - ${cita.hora_cita.substring(0,5)}</p>
+        <div class="dashboard-historial-right">
+            <div>
+                <span class="dashboard-badge ${cita.badge_class}">${cita.estado_texto}</span>
+                <p class="dashboard-historial-date">${cita.fecha_formateada} - ${cita.hora_cita.substring(0,5)}</p>
+            </div>
+            ${puedeEliminar ? `
+                <button class="dashboard-btn-delete-cita" onclick="eliminarCita(${cita.id}, '${cita.mascota_nombre}', '${cita.servicio}', '${cita.fecha_formateada}', '${cita.hora_cita.substring(0,5)}')" title="Cancelar cita">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            ` : ''}
         </div>
     `;
     
     return item;
+}
+
+/* ============================================
+   ELIMINAR CITA
+   ============================================ */
+
+async function eliminarCita(citaId, mascotaNombre, servicio, fecha, hora) {
+    try {
+        // Mensaje de confirmación con detalles de la cita
+        const mensajeConfirmacion = `¿Estás seguro de que deseas cancelar esta cita?\n\n📅 Fecha: ${fecha}\n🕐 Hora: ${hora}\n🐾 Mascota: ${mascotaNombre}\n💉 Servicio: ${servicio}\n\nEsta acción no se puede deshacer.`;
+        
+        const confirmado = await mostrarConfirmacion(mensajeConfirmacion, 'Sí, cancelar cita', 'No, mantener cita');
+        
+        if (!confirmado) {
+            return;
+        }
+        
+        // Realizar la petición al servidor
+        const response = await fetch(API_URL + 'eliminar-cita-usuario.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                cita_id: parseInt(citaId)
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mostrarMensaje('✅ ' + data.message, 'success');
+            
+            // Recargar historial y estadísticas
+            await cargarHistorial();
+            await cargarDatosUsuario();
+        } else {
+            mostrarMensaje('❌ Error: ' + data.message, 'error');
+        }
+    } catch (error) {
+        console.error('❌ Error al eliminar cita:', error);
+        mostrarMensaje('❌ Error al eliminar la cita', 'error');
+    }
 }
 
 /* ============================================
