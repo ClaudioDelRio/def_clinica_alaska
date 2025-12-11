@@ -9,7 +9,7 @@ require_once __DIR__ . '/../config/configuracion.php';
 // Destruir la sesión
 session_destroy();
 
-// Redirigir al login
-header('Location: login.php');
+// Redirigir al inicio
+header('Location: ../index.html');
 exit;
 
