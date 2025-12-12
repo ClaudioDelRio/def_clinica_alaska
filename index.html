@@ -52,7 +52,7 @@
                 <li><a href="doctores.html">Doctores</a></li>
                 <li><a href="#contacto">Donde estamos</a></li>
                 <li>
-                    <a href="admin/panel-admin.php" class="admin-link">Intranet</a>
+                    <a href="#" class="admin-link" id="btnIntranetNav">Intranet</a>
                 </li>
             </ul>
         </nav>
@@ -389,7 +389,7 @@
                         </li>
                         <li>
                             <i class="fas fa-chevron-right"></i>
-                            <a href="admin/panel-admin.php">Intranet</a>
+                            <a href="#" id="btnIntranetFooter">Intranet</a>
                         </li>
                     </ul>
                 </div>
@@ -561,7 +561,49 @@
         </div>
     </div>
 
+    <!-- ============================================
+         MODAL DE INTRANET / LOGIN ADMIN
+         ============================================ -->
+    <div class="modal-overlay" id="modalIntranet">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModalIntranet" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="login-wrapper">
+                <!-- Fondo decorativo animado -->
+                <div class="login-wrapper-bg intranet-bg"></div>
+                
+                <!-- Formulario de Inicio de Sesión Intranet -->
+                <div class="login-wrapper-right intranet-form">
+                    <div class="form-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h2>Intranet</h2>
+                        <p>Panel de Administración</p>
+                    </div>
+                    
+                    <div class="alert-message" id="alertMessageIntranet"></div>
+                    
+                    <form class="form-auth" id="formIntranetLogin">
+                        <div class="input-group">
+                            <input type="email" name="email" id="emailIntranet" placeholder="Correo electrónico" required />
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" name="password" id="passwordIntranet" placeholder="Contraseña" required />
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <button class="form-btn" type="submit">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript principal -->
     <script src="./assets/js/script.js"></script>
+    <script src="./assets/js/admin-login.js"></script>
 </body>
 </html>

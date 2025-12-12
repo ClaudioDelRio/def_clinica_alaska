@@ -462,10 +462,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarMensaje(resultado.message, 'success');
                 // Limpiar formulario
                 this.reset();
-                // Cerrar modal y redirigir al panel de usuario
+                // Cerrar modal y abrir el panel de usuario en una nueva pestaña
                 setTimeout(() => {
                     cerrarModal();
-                    window.location.href = 'usuarios/panel-usuario.php';
+                    window.open('usuarios/panel-usuario.php', '_blank');
                 }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');
@@ -518,10 +518,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarMensaje(resultado.message, 'success');
                 // Limpiar formulario
                 this.reset();
-                // Cerrar modal y redirigir al panel de usuario
+                // Cerrar modal y abrir el panel de usuario en una nueva pestaña
                 setTimeout(() => {
                     cerrarModal();
-                    window.location.href = 'usuarios/panel-usuario.php';
+                    window.open('usuarios/panel-usuario.php', '_blank');
                 }, 1000);
             } else {
                 mostrarMensaje(resultado.message, 'error');
@@ -574,6 +574,81 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar sesión al cargar la página
     verificarSesion();
+    
+    /* ============================================
+       MODAL DE INTRANET / LOGIN ADMIN
+       ============================================ */
+    
+    // Elementos del modal de intranet
+    const modalIntranet = document.getElementById('modalIntranet');
+    
+    if (modalIntranet) {
+        const closeModalIntranetBtn = document.getElementById('closeModalIntranet');
+        const botonesIntranet = document.querySelectorAll('#btnIntranetNav, #btnIntranetFooter');
+        
+        // Función para abrir el modal de intranet
+        function abrirModalIntranet() {
+            modalIntranet.classList.add('active', 'show');
+            document.body.style.overflow = 'hidden'; // Evita el scroll del body
+            
+            // En móviles, asegurar que muestra el formulario centrado
+            if (window.innerWidth <= 600) {
+                setTimeout(() => {
+                    const intranetForm = modalIntranet.querySelector('.intranet-form');
+                    if (intranetForm) {
+                        intranetForm.scrollIntoView({ 
+                            behavior: 'auto',
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    }
+                }, 50);
+            }
+        }
+        
+        // Función para cerrar el modal de intranet
+        function cerrarModalIntranet() {
+            modalIntranet.classList.remove('active', 'show');
+            document.body.style.overflow = '';
+            // Limpiar formulario al cerrar
+            const form = document.getElementById('formIntranetLogin');
+            if (form) {
+                form.reset();
+            }
+            // Limpiar mensajes de alerta
+            const alertMsg = document.getElementById('alertMessageIntranet');
+            if (alertMsg) {
+                alertMsg.style.display = 'none';
+            }
+        }
+        
+        // Abrir modal al hacer clic en botones de "Intranet"
+        botonesIntranet.forEach(boton => {
+            boton.addEventListener('click', function(e) {
+                e.preventDefault();
+                abrirModalIntranet();
+            });
+        });
+        
+        // Cerrar modal al hacer clic en el botón X
+        if (closeModalIntranetBtn) {
+            closeModalIntranetBtn.addEventListener('click', cerrarModalIntranet);
+        }
+        
+        // Cerrar modal al hacer clic fuera del contenedor
+        modalIntranet.addEventListener('click', function(e) {
+            if (e.target === modalIntranet) {
+                cerrarModalIntranet();
+            }
+        });
+        
+        // Cerrar modal con la tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalIntranet.classList.contains('active')) {
+                cerrarModalIntranet();
+            }
+        });
+    }
     
     /* ============================================
        FORMATEO AUTOMÁTICO DEL RUT AL ESCRIBIR

@@ -2016,6 +2016,87 @@ body {
     left: 118px;
 }
 
+// ============================================
+// ESTILOS ESPECÍFICOS PARA MODAL DE INTRANET
+// ============================================
+
+// Fondo decorativo para intranet (colores morado/azul)
+.login-wrapper-bg.intranet-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Formulario de intranet - ocupa todo el ancho
+.login-wrapper-right.intranet-form {
+    width: 100%;
+    padding: 50px 40px;
+}
+
+// Icono y título del header de intranet
+.intranet-form {
+    .form-header {
+        i {
+            color: #667eea;
+        }
+
+        h2 {
+            color: #667eea;
+        }
+    }
+
+    // Botón de intranet con colores morado/azul
+    .form-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+
+        &:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+    }
+
+    // Inputs de intranet con borde morado al focus
+    .input-group {
+        input {
+            &:focus {
+                border-bottom-color: #667eea;
+
+                + i {
+                    color: #667eea;
+                }
+            }
+        }
+
+        i {
+            color: rgba(102, 126, 234, 0.5);
+        }
+    }
+}
+
+// Mensajes de alerta
+.alert-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    display: none;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+
+    &.error {
+        background: #fee;
+        color: #c33;
+        border: 1px solid #fcc;
+        display: block;
+    }
+
+    &.success {
+        background: #efe;
+        color: #3c3;
+        border: 1px solid #cfc;
+        display: block;
+    }
+}
+
 .btn-volver-inicio {
     display: inline-flex;
     align-items: center;

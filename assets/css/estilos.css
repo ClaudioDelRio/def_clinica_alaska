@@ -1826,6 +1826,61 @@ body {
   left: 118px;
 }
 
+.login-wrapper-bg.intranet-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-wrapper-right.intranet-form {
+  width: 100%;
+  padding: 50px 40px;
+}
+
+.intranet-form .form-header i {
+  color: #667eea;
+}
+.intranet-form .form-header h2 {
+  color: #667eea;
+}
+.intranet-form .form-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+.intranet-form .form-btn:hover {
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+.intranet-form .input-group input:focus {
+  border-bottom-color: #667eea;
+}
+.intranet-form .input-group input:focus + i {
+  color: #667eea;
+}
+.intranet-form .input-group i {
+  color: rgba(102, 126, 234, 0.5);
+}
+
+.alert-message {
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  display: none;
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+}
+.alert-message.error {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+  display: block;
+}
+.alert-message.success {
+  background: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+  display: block;
+}
+
 .btn-volver-inicio {
   display: inline-flex;
   align-items: center;
