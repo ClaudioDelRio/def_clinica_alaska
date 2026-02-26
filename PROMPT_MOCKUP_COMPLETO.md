@@ -1,5 +1,7 @@
 # PROMPT COMPLETO PARA GENERAR MOCKUP - CLÍNICA VETERINARIA ALASKA PETS CENTER
 
+> ⚠️ **Documento histórico de mockup**: puede incluir elementos de la versión universitaria que hoy no están activos (por ejemplo, intranet/login/backend propio).
+
 ## INSTRUCCIONES PARA IA DE DISEÑO (Midjourney, DALL-E, Claude, etc.)
 
 Crea un mockup completo y detallado de un sitio web para una clínica veterinaria con las siguientes especificaciones técnicas exactas:

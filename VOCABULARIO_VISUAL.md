@@ -1,5 +1,7 @@
 # 🎨 Vocabulario Visual - Clínica Veterinaria Alaska Pets Center
 
+> ⚠️ **Documento histórico de diseño**: contiene vocabulario visual general y también referencias a componentes eliminados en la versión actual (intranet/login/backend).
+
 > Documentación completa de todos los elementos visuales y de diseño del sitio web.
 
 ---

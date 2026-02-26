@@ -1,5 +1,7 @@
 # 📋 PROMPT: Crear Guía de Estilos Completa
 
+> ⚠️ **Documento histórico de apoyo de diseño**: puede contener referencias de la versión universitaria (módulos de login/admin/API) que ya no forman parte del sitio actual en producción.
+
 > Prompt optimizado para que otra IA genere una guía de estilos (Style Guide) profesional y completa
 
 ---

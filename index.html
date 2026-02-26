@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="author" content="Claudio del Rio - Web.malgarini®">
+    <meta name="author" content="NoahVet® SpA">
     <meta name="description" content="Clínica Veterinaria Alaska Pets Center en Osorno. Especialistas en cirugías de tejidos blandos, radiología, anestesiología y atención integral para perros y gatos. Más de 18 años de experiencia cuidando a tu mascota.">
     <meta name="keywords" content="veterinaria osorno, clinica veterinaria osorno, alaska pets center, veterinario osorno, cirugia veterinaria osorno, radiologia veterinaria, anestesiologia veterinaria, atencion veterinaria osorno, vacunacion mascotas osorno, clinica animales osorno, veterinaria los lagos chile, cirugia tejidos blandos veterinaria, consulta veterinaria osorno">
     <meta name="robots" content="index, follow">
@@ -51,9 +51,6 @@
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="doctores.html">Doctores</a></li>
                 <li><a href="#contacto">Donde estamos</a></li>
-                <li>
-                    <a href="#" class="admin-link" id="btnIntranetNav">Intranet</a>
-                </li>
             </ul>
         </nav>
     </header>
@@ -387,10 +384,6 @@
                             <i class="fas fa-chevron-right"></i>
                             <a href="#contacto">Dónde Estamos</a>
                         </li>
-                        <li>
-                            <i class="fas fa-chevron-right"></i>
-                            <a href="#" id="btnIntranetFooter">Intranet</a>
-                        </li>
                     </ul>
                 </div>
 
@@ -480,130 +473,7 @@
         </nav>
     </footer>
 
-    <!-- ============================================
-         MODAL DE LOGIN / REGISTRO
-         ============================================ -->
-    <div class="modal-overlay" id="modalLogin">
-        <div class="modal-container">
-            <button class="modal-close" id="closeModal" aria-label="Cerrar">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <div class="login-wrapper">
-                <!-- Fondo decorativo animado -->
-                <div class="login-wrapper-bg"></div>
-                
-                <!-- Formulario de Registro (Sign Up) -->
-                <div class="login-wrapper-left">
-                    <div class="form-header">
-                        <i class="fas fa-paw"></i>
-                        <h2>Crear Cuenta</h2>
-                        <p>Regístrate para agendar citas</p>
-                    </div>
-                    
-                    <form class="form-auth" id="formSignup">
-                        <div class="input-group">
-                            <input type="text" placeholder="Nombre completo" required />
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="email" placeholder="Correo electrónico" required />
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" placeholder="RUT: 12.345.678-9" pattern="[0-9]{1,2}\.[0-9]{3}\.[0-9]{3}-[0-9Kk]{1}" title="Formato: 12.345.678-9" required />
-                            <i class="fas fa-id-card"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="tel" placeholder="Teléfono +56 9 XXXX XXXX" required />
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" placeholder="Dirección completa" required />
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="password" placeholder="Contraseña" required />
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <button class="form-btn" type="submit">Registrarse</button>
-                    </form>
-                    
-                    <a href="#" class="toggle-link signin-link">¿Ya tienes cuenta? Inicia Sesión</a>
-                </div>
-                
-                <!-- Formulario de Inicio de Sesión (Sign In) -->
-                <div class="login-wrapper-right">
-                    <div class="form-header">
-                        <i class="fas fa-paw"></i>
-                        <h2>Iniciar Sesión</h2>
-                        <p>Accede a tu cuenta</p>
-                    </div>
-                    
-                    <form class="form-auth" id="formSignin">
-                        <div class="input-group">
-                            <input type="email" placeholder="Correo electrónico" required />
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="password" placeholder="Contraseña" required />
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
-                        <button class="form-btn" type="submit">Iniciar Sesión</button>
-                    </form>
-                    
-                    <a href="#" class="toggle-link signup-link">¿No tienes cuenta? Regístrate</a>
-                    
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================
-         MODAL DE INTRANET / LOGIN ADMIN
-         ============================================ -->
-    <div class="modal-overlay" id="modalIntranet">
-        <div class="modal-container">
-            <button class="modal-close" id="closeModalIntranet" aria-label="Cerrar">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <div class="login-wrapper">
-                <!-- Fondo decorativo animado -->
-                <div class="login-wrapper-bg intranet-bg"></div>
-                
-                <!-- Formulario de Inicio de Sesión Intranet -->
-                <div class="login-wrapper-right intranet-form">
-                    <div class="form-header">
-                        <i class="fas fa-shield-alt"></i>
-                        <h2>Intranet</h2>
-                        <p>Panel de Administración</p>
-                    </div>
-                    
-                    <div class="alert-message" id="alertMessageIntranet"></div>
-                    
-                    <form class="form-auth" id="formIntranetLogin">
-                        <div class="input-group">
-                            <input type="email" name="email" id="emailIntranet" placeholder="Correo electrónico" required />
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="input-group">
-                            <input type="password" name="password" id="passwordIntranet" placeholder="Contraseña" required />
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <button class="form-btn" type="submit">
-                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript principal -->
     <script src="./assets/js/script.js"></script>
-    <script src="./assets/js/admin-login.js"></script>
 </body>
 </html>
